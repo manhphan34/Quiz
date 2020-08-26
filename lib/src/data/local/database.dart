@@ -31,11 +31,6 @@ class Category extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName("TestTable")
-class TestTable extends Table{
-  IntColumn get id => integer()();
-}
-
 class Quiz extends Table {
   IntColumn get id => integer().autoIncrement()();
 
@@ -63,13 +58,9 @@ class Point extends Table {
 
   DateTimeColumn get date => dateTime()();
 
-  @override
-  List<String> get customConstraints => [
-    'FOREIGN KEY(idCat) REFERENCES Category(id)'
-  ];
 }
 
-@UseMoor(tables: [User, Quiz, Point, Category, TestTable], daos: [ModesDao])
+@UseMoor(tables: [User, Quiz, Point, Category], daos: [ModesDao])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase _instance;
 

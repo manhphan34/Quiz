@@ -1372,153 +1372,6 @@ class $CategoryTable extends Category
   }
 }
 
-class TestTable extends DataClass implements Insertable<TestTable> {
-  final int id;
-  TestTable({@required this.id});
-  factory TestTable.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
-    final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    return TestTable(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-    );
-  }
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
-    }
-    return map;
-  }
-
-  TestTableCompanion toCompanion(bool nullToAbsent) {
-    return TestTableCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-    );
-  }
-
-  factory TestTable.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return TestTable(
-      id: serializer.fromJson<int>(json['id']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-    };
-  }
-
-  TestTable copyWith({int id}) => TestTable(
-        id: id ?? this.id,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('TestTable(')..write('id: $id')..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => $mrjf(id.hashCode);
-  @override
-  bool operator ==(dynamic other) =>
-      identical(this, other) || (other is TestTable && other.id == this.id);
-}
-
-class TestTableCompanion extends UpdateCompanion<TestTable> {
-  final Value<int> id;
-  const TestTableCompanion({
-    this.id = const Value.absent(),
-  });
-  TestTableCompanion.insert({
-    @required int id,
-  }) : id = Value(id);
-  static Insertable<TestTable> custom({
-    Expression<int> id,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-    });
-  }
-
-  TestTableCompanion copyWith({Value<int> id}) {
-    return TestTableCompanion(
-      id: id ?? this.id,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TestTableCompanion(')..write('id: $id')..write(')'))
-        .toString();
-  }
-}
-
-class $TestTableTable extends TestTable
-    with TableInfo<$TestTableTable, TestTable> {
-  final GeneratedDatabase _db;
-  final String _alias;
-  $TestTableTable(this._db, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn(
-      'id',
-      $tableName,
-      false,
-    );
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [id];
-  @override
-  $TestTableTable get asDslTable => this;
-  @override
-  String get $tableName => _alias ?? 'test_table';
-  @override
-  final String actualTableName = 'test_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<TestTable> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
-  @override
-  TestTable map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return TestTable.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  $TestTableTable createAlias(String alias) {
-    return $TestTableTable(_db, alias);
-  }
-}
-
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserTable _user;
@@ -1529,15 +1382,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $PointTable get point => _point ??= $PointTable(this);
   $CategoryTable _category;
   $CategoryTable get category => _category ??= $CategoryTable(this);
-  $TestTableTable _testTable;
-  $TestTableTable get testTable => _testTable ??= $TestTableTable(this);
   ModesDao _modesDao;
   ModesDao get modesDao => _modesDao ??= ModesDao(this as AppDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [user, quiz, point, category, testTable];
+      [user, quiz, point, category];
 }
 
 // **************************************************************************
