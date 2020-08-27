@@ -233,7 +233,6 @@ class _TextIntroState extends State<TextIntro> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     cubit.listen((state) {
       setState(() {
-        print(state);
         title = state;
       });
     });
