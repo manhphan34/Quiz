@@ -1,22 +1,30 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
 import 'package:quiz/src/data/local/database.dart';
 import 'package:quiz/src/data/models/Category.dart';
+import 'package:quiz/src/data/models/User.dart';
+import 'package:quiz/src/screen/intro/intro_bloc.dart';
 import 'package:quiz/src/utils/Constants.dart';
+import 'package:quiz/src/utils/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'intro_cubit.dart';
+import 'intro_event.dart';
+import 'intro_state.dart';
 
 final cubit = IntroCubit("");
 
 class Introduce extends StatelessWidget {
-  var db = AppDatabase.getInstance().modesDao;
+  final db = AppDatabase.getInstance().modesDao;
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +61,24 @@ class Introduce extends StatelessWidget {
                     color: Colors.white,
                     padding: EdgeInsets.all(12),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/category");
+                      showDialog(
+                        context: context,
+                        builder: (context) => BlocProvider<IntroBloc>(
+                          create: (context) => IntroBloc(),
+                          child: RegisterDialog(),
+                        ),
+                      );
                     },
                     child: Text(
                       "Join now",
                       textAlign: TextAlign.center,
                       style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
-                )
+                ),
               ],
             )
           ],
@@ -96,7 +110,10 @@ class Introduce extends StatelessWidget {
           icon: "assets/images/book.png",
           des: "Entertainment"),
       CategoryModel(
-          id: 11, name: "Film", icon: "assets/images/film.png", des: "Entertainment"),
+          id: 11,
+          name: "Film",
+          icon: "assets/images/film.png",
+          des: "Entertainment"),
       CategoryModel(
           id: 12,
           name: "Music",
@@ -221,7 +238,6 @@ class _TextIntroState extends State<TextIntro> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
@@ -393,17 +409,187 @@ class _StateImageIntro extends State<ImageIntro> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-//      onHorizontalDragUpdate: (details) {
-//        if (details.delta.dx > 0) {
-//          print("right swipe");
-//        } else if (details.delta.dx < 0) {
-//          print("left swipe");
-//        }
-//      },
       child: Image.asset(
         this.pathImage,
         fit: BoxFit.fill,
       ),
     );
+  }
+}
+
+class RegisterDialog extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _RegisterDialogState();
+  }
+}
+
+class _RegisterDialogState extends State<RegisterDialog> {
+  String _nameController = "";
+
+  String file = "";
+  UserData user;
+  var picker = ImagePicker();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        margin: EdgeInsets.only(left: 16, right: 16),
+        width: double.infinity,
+        height: 400,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          body: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 16,
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          topLeft: Radius.circular(8)),
+                      color: Colors.red,
+                    ),
+                    margin: EdgeInsets.only(bottom: 24),
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 50,
+                    child: Text(
+                      "Register",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(55)),
+                    child: InkWell(
+                      splashColor: Colors.white,
+                      highlightColor: Colors.white,
+                      child: _buildAvatar(),
+                      onTap: () {
+                        _updateImage();
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(right: 8, left: 8, top: 16, bottom: 32),
+                    child: TextField(
+                      cursorColor: Colors.red,
+                      onChanged: (text) {
+                        setState(() {
+                          _nameController = text;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        labelText: "Họ và tên",
+                        labelStyle: TextStyle(fontSize: 20),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 1.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 1.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  BlocBuilder<IntroBloc, IntroState>(
+                    builder: (context, state) {
+                      return RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: EdgeInsets.only(
+                            left: 32, right: 32, top: 16, bottom: 16),
+                        onPressed: () {
+                          if (_nameController.isNotEmpty && file.isNotEmpty) {
+                            context.bloc<IntroBloc>().add(RegisterUserEvent(
+                                    user: UserModel(
+                                  name: _nameController,
+                                  image: file,
+                                  date: DateTime.now(),
+                                )));
+                            if (state is RegisterUserSuccess) {
+                              _updateLogin();
+                              Navigator.pushNamed(context, '/home');
+                            } else if (state is RegisterUserFail) {
+                              showToast("Có lỗi xảy ra vui lòng thử lại sau");
+                            }
+                          } else {
+                            showToast(
+                                "Bạn cần cung cấp đầy đủ họ tên và ảnh đại diện !");
+                          }
+                        },
+                        color: _getColorRegister(),
+                        child: Text(
+                          "Register",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _updateLogin() async {
+    var shared = await SharedPreferences.getInstance();
+    shared.setBool(IS_REGISTER, true);
+  }
+
+  Color _getColorRegister() {
+    if (_nameController.isNotEmpty) {
+      return Colors.redAccent;
+    } else
+      return Colors.grey;
+  }
+
+  void _updateImage() async {
+    print("update");
+    final picketFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (picketFile != null && picketFile.path != null) file = picketFile.path;
+    });
+  }
+
+  Widget _buildAvatar() {
+    if (file != "") {
+      return CircleAvatar(
+        radius: 55,
+        backgroundColor: Colors.yellowAccent,
+        child: CircleAvatar(
+          radius: 52,
+          backgroundImage: FileImage(File(file)),
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 55,
+        backgroundColor: Colors.yellowAccent,
+        child: CircleAvatar(
+          radius: 52,
+          backgroundImage: AssetImage(
+            "assets/images/add_avatar_1.png",
+          ),
+        ),
+      );
+    }
   }
 }

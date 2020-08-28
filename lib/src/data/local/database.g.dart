@@ -12,20 +12,17 @@ class UserData extends DataClass implements Insertable<UserData> {
   final String name;
   final DateTime date;
   final String image;
-  final bool isLogin;
   UserData(
       {@required this.id,
       @required this.name,
       this.date,
-      @required this.image,
-      @required this.isLogin});
+      @required this.image});
   factory UserData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return UserData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
@@ -33,8 +30,6 @@ class UserData extends DataClass implements Insertable<UserData> {
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
       image:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}image']),
-      isLogin:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_login']),
     );
   }
   @override
@@ -52,9 +47,6 @@ class UserData extends DataClass implements Insertable<UserData> {
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
-    if (!nullToAbsent || isLogin != null) {
-      map['is_login'] = Variable<bool>(isLogin);
-    }
     return map;
   }
 
@@ -65,9 +57,6 @@ class UserData extends DataClass implements Insertable<UserData> {
       date: date == null && nullToAbsent ? const Value.absent() : Value(date),
       image:
           image == null && nullToAbsent ? const Value.absent() : Value(image),
-      isLogin: isLogin == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isLogin),
     );
   }
 
@@ -79,7 +68,6 @@ class UserData extends DataClass implements Insertable<UserData> {
       name: serializer.fromJson<String>(json['name']),
       date: serializer.fromJson<DateTime>(json['date']),
       image: serializer.fromJson<String>(json['image']),
-      isLogin: serializer.fromJson<bool>(json['isLogin']),
     );
   }
   @override
@@ -90,18 +78,15 @@ class UserData extends DataClass implements Insertable<UserData> {
       'name': serializer.toJson<String>(name),
       'date': serializer.toJson<DateTime>(date),
       'image': serializer.toJson<String>(image),
-      'isLogin': serializer.toJson<bool>(isLogin),
     };
   }
 
-  UserData copyWith(
-          {int id, String name, DateTime date, String image, bool isLogin}) =>
+  UserData copyWith({int id, String name, DateTime date, String image}) =>
       UserData(
         id: id ?? this.id,
         name: name ?? this.name,
         date: date ?? this.date,
         image: image ?? this.image,
-        isLogin: isLogin ?? this.isLogin,
       );
   @override
   String toString() {
@@ -109,17 +94,14 @@ class UserData extends DataClass implements Insertable<UserData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('date: $date, ')
-          ..write('image: $image, ')
-          ..write('isLogin: $isLogin')
+          ..write('image: $image')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(name.hashCode,
-          $mrjc(date.hashCode, $mrjc(image.hashCode, isLogin.hashCode)))));
+      id.hashCode, $mrjc(name.hashCode, $mrjc(date.hashCode, image.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -127,8 +109,7 @@ class UserData extends DataClass implements Insertable<UserData> {
           other.id == this.id &&
           other.name == this.name &&
           other.date == this.date &&
-          other.image == this.image &&
-          other.isLogin == this.isLogin);
+          other.image == this.image);
 }
 
 class UserCompanion extends UpdateCompanion<UserData> {
@@ -136,36 +117,30 @@ class UserCompanion extends UpdateCompanion<UserData> {
   final Value<String> name;
   final Value<DateTime> date;
   final Value<String> image;
-  final Value<bool> isLogin;
   const UserCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.date = const Value.absent(),
     this.image = const Value.absent(),
-    this.isLogin = const Value.absent(),
   });
   UserCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
     this.date = const Value.absent(),
     @required String image,
-    @required bool isLogin,
   })  : name = Value(name),
-        image = Value(image),
-        isLogin = Value(isLogin);
+        image = Value(image);
   static Insertable<UserData> custom({
     Expression<int> id,
     Expression<String> name,
     Expression<DateTime> date,
     Expression<String> image,
-    Expression<bool> isLogin,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (date != null) 'date': date,
       if (image != null) 'image': image,
-      if (isLogin != null) 'is_login': isLogin,
     });
   }
 
@@ -173,14 +148,12 @@ class UserCompanion extends UpdateCompanion<UserData> {
       {Value<int> id,
       Value<String> name,
       Value<DateTime> date,
-      Value<String> image,
-      Value<bool> isLogin}) {
+      Value<String> image}) {
     return UserCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       date: date ?? this.date,
       image: image ?? this.image,
-      isLogin: isLogin ?? this.isLogin,
     );
   }
 
@@ -199,9 +172,6 @@ class UserCompanion extends UpdateCompanion<UserData> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
-    if (isLogin.present) {
-      map['is_login'] = Variable<bool>(isLogin.value);
-    }
     return map;
   }
 
@@ -211,8 +181,7 @@ class UserCompanion extends UpdateCompanion<UserData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('date: $date, ')
-          ..write('image: $image, ')
-          ..write('isLogin: $isLogin')
+          ..write('image: $image')
           ..write(')'))
         .toString();
   }
@@ -267,20 +236,8 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
     );
   }
 
-  final VerificationMeta _isLoginMeta = const VerificationMeta('isLogin');
-  GeneratedBoolColumn _isLogin;
   @override
-  GeneratedBoolColumn get isLogin => _isLogin ??= _constructIsLogin();
-  GeneratedBoolColumn _constructIsLogin() {
-    return GeneratedBoolColumn(
-      'is_login',
-      $tableName,
-      false,
-    );
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [id, name, date, image, isLogin];
+  List<GeneratedColumn> get $columns => [id, name, date, image];
   @override
   $UserTable get asDslTable => this;
   @override
@@ -310,12 +267,6 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
           _imageMeta, image.isAcceptableOrUnknown(data['image'], _imageMeta));
     } else if (isInserting) {
       context.missing(_imageMeta);
-    }
-    if (data.containsKey('is_login')) {
-      context.handle(_isLoginMeta,
-          isLogin.isAcceptableOrUnknown(data['is_login'], _isLoginMeta));
-    } else if (isInserting) {
-      context.missing(_isLoginMeta);
     }
     return context;
   }
@@ -1175,6 +1126,7 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
         .toString();
   }
 
+  @override
   @override
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(name.hashCode, $mrjc(description.hashCode, icon.hashCode))));

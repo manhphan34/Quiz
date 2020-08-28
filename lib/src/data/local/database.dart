@@ -13,8 +13,6 @@ class User extends Table {
   DateTimeColumn get date => dateTime().nullable()();
 
   TextColumn get image => text()();
-
-  BoolColumn get isLogin => boolean()();
 }
 
 
