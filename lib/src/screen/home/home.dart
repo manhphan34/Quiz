@@ -1,8 +1,8 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz/icons/app_icons.dart';
 import 'package:quiz/src/screen/category/category.dart';
-import 'package:quiz/src/screen/icons/app_icons.dart';
 import 'package:quiz/src/screen/rank/rank.dart';
 import 'package:quiz/src/screen/store/store.dart';
 import 'package:quiz/src/screen/user/user.dart';
@@ -76,7 +76,7 @@ class _BottomNavSate extends State<BottomNav> {
               title: Text("Store"),
               icon: Icon(Icons.store),
               inactiveColor: Colors.black,
-              activeColor: Colors.purpleAccent),
+              activeColor: Colors.red[200]),
           BottomNavyBarItem(
               textAlign: TextAlign.center,
               title: Text("User"),

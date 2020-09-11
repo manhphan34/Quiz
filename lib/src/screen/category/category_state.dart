@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
+import 'dart:collection';
+
 import 'package:quiz/src/data/local/database.dart';
 
-class CategorySate extends Equatable {
-  @override
-  List<Object> get props => [];
-}
+class CategorySate {}
 
 class CategoryInitState extends CategorySate {}
 
@@ -43,3 +41,11 @@ class CategorySelectedQuizDifficultyState extends CategorySate {
   @override
   int get hashCode => super.hashCode;
 }
+
+class CategoryLoadedNumberQuestionState extends CategorySate {
+  final LinkedHashMap<String, List<String>> data;
+
+  CategoryLoadedNumberQuestionState({this.data});
+}
+
+class CategoryLoadingNumberQuestionState extends CategorySate {}

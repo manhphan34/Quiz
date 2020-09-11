@@ -4,15 +4,19 @@ import 'package:quiz/src/data/local/database.dart';
 class PointModel {
   int id;
   int idCat;
-  int point;
+  int ePoint;
+  int mPoint;
+  int hPoint;
   DateTime date;
 
-  PointModel({this.idCat, this.point, this.date});
+  PointModel({this.idCat, this.ePoint, this.hPoint, this.mPoint, this.date});
 
   PointCompanion convert() {
     return PointCompanion(
       idCat: Value(this.idCat),
-      point: Value(this.point),
+      ePoint: Value(this.ePoint),
+      mPoint: Value(this.mPoint),
+      hPoint: Value(this.hPoint),
       date: Value(this.date),
     );
   }

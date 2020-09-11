@@ -1,7 +1,7 @@
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:quiz/src/data/models/Category.dart';
-import 'package:quiz/src/data/models/Quiz.dart';
-import 'package:quiz/src/data/models/User.dart';
+import 'package:quiz/src/data/models/category.dart';
+import 'package:quiz/src/data/models/quiz_model.dart';
+import 'package:quiz/src/data/models/user.dart';
 
 part 'database.g.dart';
 
@@ -13,8 +13,17 @@ class User extends Table {
   DateTimeColumn get date => dateTime().nullable()();
 
   TextColumn get image => text()();
-}
 
+  TextColumn get imageCover => text().nullable()();
+
+  IntColumn get ePoint => integer().nullable()();
+
+  IntColumn get mPoint => integer().nullable()();
+
+  IntColumn get hPoint => integer().nullable()();
+
+  IntColumn get rankPoint => integer().nullable()();
+}
 
 class Category extends Table {
   IntColumn get id => integer()();
@@ -52,13 +61,48 @@ class Point extends Table {
 
   IntColumn get idCat => integer()();
 
-  IntColumn get point => integer()();
-
   DateTimeColumn get date => dateTime()();
 
+  IntColumn get ePoint => integer()();
+
+  IntColumn get mPoint => integer()();
+
+  IntColumn get hPoint => integer()();
 }
 
-@UseMoor(tables: [User, Quiz, Point, Category], daos: [ModesDao])
+class Title extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  TextColumn get title => text()();
+
+  IntColumn get ePoint => integer()();
+
+  IntColumn get mPoint => integer()();
+
+  IntColumn get hPoint => integer()();
+
+  TextColumn get icon => text()();
+
+  BoolColumn get isActive => boolean()();
+}
+
+class Item extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get name => text()();
+
+  TextColumn get description => text()();
+
+  IntColumn get quantity => integer()();
+
+  IntColumn get price => integer()();
+
+  TextColumn get type => text()();
+
+  TextColumn get image => text()();
+}
+
+@UseMoor(tables: [User, Quiz, Point, Category, Title, Item], daos: [ModesDao])
 class AppDatabase extends _$AppDatabase {
   static AppDatabase _instance;
 
@@ -68,16 +112,17 @@ class AppDatabase extends _$AppDatabase {
     }
     return _instance;
   }
+
   AppDatabase()
       : super(FlutterQueryExecutor.inDatabaseFolder(
-    path: 'db.sqlite',
-  ));
+          path: 'db.sqlite',
+        ));
 
   @override
   int get schemaVersion => 1;
 }
 
-@UseDao(tables: [User, Quiz, Point, Category])
+@UseDao(tables: [User, Quiz, Point, Category, Title, Item])
 class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
   ModesDao(AppDatabase db) : super(db);
 
@@ -86,6 +131,12 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
   Future<List<PointData>> get getPoints => select(point).get();
 
   Future<List<QuizData>> get getQuizzes => select(quiz).get();
+
+  Future<List<TitleData>> getTitles() {
+    return (select(title)..where((tbl) => tbl.isActive.equals(true))).get();
+  }
+
+  Future<List<ItemData>> get getItems => select(item).get();
 
   Future<List<QuizData>> getQuizzesByCat(int id) {
     return (select(quiz)..where((tbl) => tbl.idCat.equals(id))).get();
@@ -103,7 +154,11 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
 
   Future<void> insertCategories({List<CategoryModel> cats}) async {
     await batch(
-            (batch) => {batch.insertAll(category, convertToCategories(cats))});
+        (batch) => {batch.insertAll(category, convertToCategories(cats))});
+  }
+
+  Future<void> insertItems({List<ItemCompanion> items}) async {
+    await batch((batch) => {batch.insertAll(item, items)});
   }
 
   Future<void> insertPoint(PointCompanion pointCompanion) {
@@ -116,9 +171,26 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
     );
   }
 
-  Future updatePoint(int catId, int p) {
-    return (update(point)..where((t) => t.idCat.equals(catId))).write(
-      PointCompanion(point: Value(p), date: Value(DateTime.now())),
+  Future updateUserPoint(int id, int ePoint, int mPoint, int hPoint) {
+    return (update(user)..where((t) => t.id.equals(id))).write(
+      UserCompanion(
+          ePoint: Value(ePoint), mPoint: Value(mPoint), hPoint: Value(hPoint)),
     );
   }
+
+  Future<List<ItemData>> getItemById(int id) {
+    return (select(item)..where((tbl) => tbl.id.equals(id))).get();
+  }
+
+  Future updateItem(int id, quantity) {
+    return (update(item)..where((t) => t.id.equals(id))).write(
+      ItemCompanion(quantity: Value(quantity)),
+    );
+  }
+
+// Future updatePoint(int catId, int p) {
+//   return (update(point)..where((t) => t.idCat.equals(catId))).write(
+//     PointCompanion(point: Value(p), date: Value(DateTime.now())),
+//   );
+// }
 }

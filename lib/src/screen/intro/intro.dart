@@ -4,17 +4,20 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
+import 'package:moor_flutter/moor_flutter.dart' as moor;
 import 'package:quiz/src/data/local/database.dart';
-import 'package:quiz/src/data/models/Category.dart';
-import 'package:quiz/src/data/models/User.dart';
+import 'package:quiz/src/data/models/category.dart';
+import 'package:quiz/src/data/models/user.dart';
 import 'package:quiz/src/screen/intro/intro_bloc.dart';
 import 'package:quiz/src/utils/Constants.dart';
 import 'package:quiz/src/utils/toast.dart';
+import 'package:quiz/src/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'intro_cubit.dart';
@@ -94,6 +97,7 @@ class Introduce extends StatelessWidget {
     if (!isInitData) {
       share.setBool(IS_INIT_DATA, true);
       _initData();
+      _initItems();
     }
   }
 
@@ -222,6 +226,47 @@ class Introduce extends StatelessWidget {
     ];
 
     db.insertCategories(cats: cats);
+  }
+
+  void _initItems() {
+    List<ItemCompanion> items = [
+      ItemCompanion(
+          id: moor.Value(1),
+          quantity: moor.Value(0),
+          name: moor.Value("50/50"),
+          image: moor.Value(getAssetImagePath("50_50.png")),
+          type: moor.Value(SILVER),
+          description: moor.Value(
+              "Show two incorrect answers. Each question can be used only once"),
+          price: moor.Value(15)),
+      ItemCompanion(
+          id: moor.Value(2),
+          quantity: moor.Value(0),
+          name: moor.Value("5s"),
+          image: moor.Value(getAssetImagePath("5s.png")),
+          type: moor.Value(SILVER),
+          description: moor.Value(
+              "Time to answer questions increased five seconds. Each question can be used only once"),
+          price: moor.Value(5)),
+      ItemCompanion(
+          id: moor.Value(3),
+          quantity: moor.Value(0),
+          name: moor.Value("Watch"),
+          image: moor.Value(getAssetImagePath("watch.png")),
+          type: moor.Value(SILVER),
+          description: moor.Value(
+              "Check an answer is correct or incorrect. Each question can be used only once"),
+          price: moor.Value(10)),
+      ItemCompanion(
+          id: moor.Value(5),
+          quantity: moor.Value(0),
+          name: moor.Value("Freeze"),
+          image: moor.Value(getAssetImagePath("cancel.png")),
+          type: moor.Value(GOLD),
+          description: moor.Value("Stop time to answer questions."),
+          price: moor.Value(20)),
+    ];
+    db.insertItems(items: items);
   }
 }
 
@@ -432,118 +477,128 @@ class _RegisterDialogState extends State<RegisterDialog> {
   var picker = ImagePicker();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.center,
-      child: Container(
-        margin: EdgeInsets.only(left: 16, right: 16),
-        width: double.infinity,
-        height: 400,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.transparent,
-          body: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            elevation: 16,
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          topLeft: Radius.circular(8)),
-                      color: Colors.red,
-                    ),
-                    margin: EdgeInsets.only(bottom: 24),
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 50,
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(55)),
-                    child: InkWell(
-                      splashColor: Colors.white,
-                      highlightColor: Colors.white,
-                      child: _buildAvatar(),
-                      onTap: () {
-                        _updateImage();
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(right: 8, left: 8, top: 16, bottom: 32),
-                    child: TextField(
-                      cursorColor: Colors.red,
-                      onChanged: (text) {
-                        setState(() {
-                          _nameController = text;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: "Họ và tên",
-                        labelStyle: TextStyle(fontSize: 20),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red, width: 1.0),
+      child: BlocProvider(
+        create: (context) => IntroBloc(),
+        child: BlocBuilder<IntroBloc, IntroState>(
+          builder: (context, state) {
+            return Container(
+              margin: EdgeInsets.only(left: 16, right: 16),
+              width: double.infinity,
+              height: 400,
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.transparent,
+                body: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  elevation: 16,
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(8),
+                                topLeft: Radius.circular(8)),
+                            color: Colors.red,
+                          ),
+                          margin: EdgeInsets.only(bottom: 24),
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 50,
+                          child: Text(
+                            "Register",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red, width: 1.0),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(55)),
+                          child: InkWell(
+                            splashColor: Colors.white,
+                            highlightColor: Colors.white,
+                            child: _buildAvatar(),
+                            onTap: () {
+                              _updateImage();
+                            },
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  BlocBuilder<IntroBloc, IntroState>(
-                    builder: (context, state) {
-                      return RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                        Container(
+                          margin: EdgeInsets.only(
+                              right: 8, left: 8, top: 16, bottom: 32),
+                          child: TextField(
+                            cursorColor: Colors.red,
+                            onChanged: (text) {
+                                _nameController = text;
+                            },
+                            decoration: InputDecoration(
+                              labelText: "Họ và tên",
+                              labelStyle: TextStyle(fontSize: 20),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 1.0),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 1.0),
+                              ),
+                            ),
+                          ),
                         ),
-                        padding: EdgeInsets.only(
-                            left: 32, right: 32, top: 16, bottom: 16),
-                        onPressed: () {
-                          if (_nameController.isNotEmpty && file.isNotEmpty) {
-                            context.bloc<IntroBloc>().add(RegisterUserEvent(
-                                    user: UserModel(
-                                  name: _nameController,
-                                  image: file,
-                                  date: DateTime.now(),
-                                )));
-                            if (state is RegisterUserSuccess) {
+                        RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: EdgeInsets.only(
+                              left: 32, right: 32, top: 16, bottom: 16),
+                          onPressed: () {
+                            if (_nameController.isNotEmpty && file.isNotEmpty) {
+                              context.bloc<IntroBloc>().add(
+                                    RegisterUserEvent(
+                                      user: UserModel(
+                                          name: _nameController,
+                                          image: file,
+                                          date: DateTime.now(),
+                                          ePoint: 9999,
+                                          mPoint: 9999,
+                                          hPoint: 9999,
+                                          rankPoint: 0),
+                                    ),
+                                  );
                               _updateLogin();
-                              Navigator.pushNamed(context, '/home');
-                            } else if (state is RegisterUserFail) {
-                              showToast("Có lỗi xảy ra vui lòng thử lại sau");
+                              Navigator.pushNamed(context, "/home");
+                            } else {
+                              showToast(
+                                  "You need to provide your name and avatar");
                             }
-                          } else {
-                            showToast(
-                                "Bạn cần cung cấp đầy đủ họ tên và ảnh đại diện !");
-                          }
-                        },
-                        color: _getColorRegister(),
-                        child: Text(
-                          "Register",
-                          style: TextStyle(color: Colors.white),
+                          },
+                          color: Colors.red,
+                          child: Text(
+                            "Register",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                      );
-                    },
-                  )
-                ],
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -552,13 +607,6 @@ class _RegisterDialogState extends State<RegisterDialog> {
   Future<void> _updateLogin() async {
     var shared = await SharedPreferences.getInstance();
     shared.setBool(IS_REGISTER, true);
-  }
-
-  Color _getColorRegister() {
-    if (_nameController.isNotEmpty) {
-      return Colors.redAccent;
-    } else
-      return Colors.grey;
   }
 
   void _updateImage() async {

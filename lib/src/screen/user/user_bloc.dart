@@ -6,7 +6,7 @@ import 'package:quiz/src/screen/user/user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   var db = AppDatabase.getInstance().modesDao;
 
-  UserBloc(UserState initialState) : super(initialState);
+  UserBloc() : super(UserInitialState());
 
   @override
   Stream<UserState> mapEventToState(UserEvent event) async* {
@@ -20,6 +20,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       } else {
         yield RegisterUserSuccess();
       }
+    } else if (event is UserLoadInformationEvent) {
+      var user = await db.getUser;
+      yield UserLoadedInformationState(user: user[0]);
+    } else if (event is UserLoadedPointState) {
+      var point = await db.getPoints;
+      yield UserLoadedPointState(point: point[0]);
+    } else if (event is UserUdpatePointEvent) {
+      await db.updateUserPoint(
+          event.id, event.ePoint, event.mPoint, event.hPoint);
+      var user = await db.getUser;
+      yield UserLoadedInformationState(user: user[0]);
     }
   }
 }

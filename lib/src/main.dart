@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz/src/screen/category/category.dart';
 import 'package:quiz/src/screen/home/home.dart';
 import 'package:quiz/src/screen/intro/intro.dart';
-import 'package:quiz/src/utils/Constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz/src/screen/splash/splash.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,8 +16,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       initialRoute: '/',
       routes: {
+        "/": (context) => Splash(),
         '/category': (context) => Category(),
         '/home': (context) => Home(),
+        '/intro': (context) => Introduce()
       },
       theme: ThemeData(
           // This is the theme of your application.
@@ -36,22 +37,6 @@ class MyApp extends StatelessWidget {
           // closer together (more dense) than on mobile platforms.
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: "archivo"),
-      home: _startApp(),
     );
-  }
-
-  Widget _startApp() {
-    isFirst().then((value) {
-      if (value) {
-        return Home();
-      } else
-        return Introduce();
-    });
-    return Introduce();
-  }
-
-  Future<bool> isFirst() async {
-    var shared = await SharedPreferences.getInstance();
-    return shared.getBool(IS_REGISTER) ?? false;
   }
 }

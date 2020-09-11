@@ -1,2 +1,13 @@
 const String IS_REGISTER = "IS_REGISTER";
 const String IS_INIT_DATA = "IS_INIT_DATA";
+const String  GOLD = "GOLD";
+const String  SILVER = "SILVER";
+const String  BRONZE = "BRONZE";
+const int ITEM_50_50_ID = 1;
+const int ITEM_5S_ID = 2;
+const int ITEM_WATCH_ID = 3;
+const int ITEM_CHANGE_ID = 4;
+const int ITEM_FREEZE_ID = 5;
+const String HARD_MODE = "hard";
+const String MEDIUM_MODE = "medium";
+const String EASY_MODE = "easy";

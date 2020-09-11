@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:quiz/src/data/models/User.dart';
-import 'package:quiz/src/screen/intro/intro.dart';
+import 'package:quiz/src/data/models/user.dart';
 
 class IntroEvent extends Equatable {
   @override

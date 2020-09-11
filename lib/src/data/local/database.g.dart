@@ -12,11 +12,21 @@ class UserData extends DataClass implements Insertable<UserData> {
   final String name;
   final DateTime date;
   final String image;
+  final String imageCover;
+  final int ePoint;
+  final int mPoint;
+  final int hPoint;
+  final int rankPoint;
   UserData(
       {@required this.id,
       @required this.name,
       this.date,
-      @required this.image});
+      @required this.image,
+      this.imageCover,
+      this.ePoint,
+      this.mPoint,
+      this.hPoint,
+      this.rankPoint});
   factory UserData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -30,6 +40,16 @@ class UserData extends DataClass implements Insertable<UserData> {
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
       image:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}image']),
+      imageCover: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}image_cover']),
+      ePoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}e_point']),
+      mPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}m_point']),
+      hPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}h_point']),
+      rankPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}rank_point']),
     );
   }
   @override
@@ -47,6 +67,21 @@ class UserData extends DataClass implements Insertable<UserData> {
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
+    if (!nullToAbsent || imageCover != null) {
+      map['image_cover'] = Variable<String>(imageCover);
+    }
+    if (!nullToAbsent || ePoint != null) {
+      map['e_point'] = Variable<int>(ePoint);
+    }
+    if (!nullToAbsent || mPoint != null) {
+      map['m_point'] = Variable<int>(mPoint);
+    }
+    if (!nullToAbsent || hPoint != null) {
+      map['h_point'] = Variable<int>(hPoint);
+    }
+    if (!nullToAbsent || rankPoint != null) {
+      map['rank_point'] = Variable<int>(rankPoint);
+    }
     return map;
   }
 
@@ -57,6 +92,18 @@ class UserData extends DataClass implements Insertable<UserData> {
       date: date == null && nullToAbsent ? const Value.absent() : Value(date),
       image:
           image == null && nullToAbsent ? const Value.absent() : Value(image),
+      imageCover: imageCover == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageCover),
+      ePoint:
+          ePoint == null && nullToAbsent ? const Value.absent() : Value(ePoint),
+      mPoint:
+          mPoint == null && nullToAbsent ? const Value.absent() : Value(mPoint),
+      hPoint:
+          hPoint == null && nullToAbsent ? const Value.absent() : Value(hPoint),
+      rankPoint: rankPoint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rankPoint),
     );
   }
 
@@ -68,6 +115,11 @@ class UserData extends DataClass implements Insertable<UserData> {
       name: serializer.fromJson<String>(json['name']),
       date: serializer.fromJson<DateTime>(json['date']),
       image: serializer.fromJson<String>(json['image']),
+      imageCover: serializer.fromJson<String>(json['imageCover']),
+      ePoint: serializer.fromJson<int>(json['ePoint']),
+      mPoint: serializer.fromJson<int>(json['mPoint']),
+      hPoint: serializer.fromJson<int>(json['hPoint']),
+      rankPoint: serializer.fromJson<int>(json['rankPoint']),
     );
   }
   @override
@@ -78,15 +130,34 @@ class UserData extends DataClass implements Insertable<UserData> {
       'name': serializer.toJson<String>(name),
       'date': serializer.toJson<DateTime>(date),
       'image': serializer.toJson<String>(image),
+      'imageCover': serializer.toJson<String>(imageCover),
+      'ePoint': serializer.toJson<int>(ePoint),
+      'mPoint': serializer.toJson<int>(mPoint),
+      'hPoint': serializer.toJson<int>(hPoint),
+      'rankPoint': serializer.toJson<int>(rankPoint),
     };
   }
 
-  UserData copyWith({int id, String name, DateTime date, String image}) =>
+  UserData copyWith(
+          {int id,
+          String name,
+          DateTime date,
+          String image,
+          String imageCover,
+          int ePoint,
+          int mPoint,
+          int hPoint,
+          int rankPoint}) =>
       UserData(
         id: id ?? this.id,
         name: name ?? this.name,
         date: date ?? this.date,
         image: image ?? this.image,
+        imageCover: imageCover ?? this.imageCover,
+        ePoint: ePoint ?? this.ePoint,
+        mPoint: mPoint ?? this.mPoint,
+        hPoint: hPoint ?? this.hPoint,
+        rankPoint: rankPoint ?? this.rankPoint,
       );
   @override
   String toString() {
@@ -94,14 +165,33 @@ class UserData extends DataClass implements Insertable<UserData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('date: $date, ')
-          ..write('image: $image')
+          ..write('image: $image, ')
+          ..write('imageCover: $imageCover, ')
+          ..write('ePoint: $ePoint, ')
+          ..write('mPoint: $mPoint, ')
+          ..write('hPoint: $hPoint, ')
+          ..write('rankPoint: $rankPoint')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => $mrjf($mrjc(
-      id.hashCode, $mrjc(name.hashCode, $mrjc(date.hashCode, image.hashCode))));
+      id.hashCode,
+      $mrjc(
+          name.hashCode,
+          $mrjc(
+              date.hashCode,
+              $mrjc(
+                  image.hashCode,
+                  $mrjc(
+                      imageCover.hashCode,
+                      $mrjc(
+                          ePoint.hashCode,
+                          $mrjc(
+                              mPoint.hashCode,
+                              $mrjc(
+                                  hPoint.hashCode, rankPoint.hashCode)))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -109,7 +199,12 @@ class UserData extends DataClass implements Insertable<UserData> {
           other.id == this.id &&
           other.name == this.name &&
           other.date == this.date &&
-          other.image == this.image);
+          other.image == this.image &&
+          other.imageCover == this.imageCover &&
+          other.ePoint == this.ePoint &&
+          other.mPoint == this.mPoint &&
+          other.hPoint == this.hPoint &&
+          other.rankPoint == this.rankPoint);
 }
 
 class UserCompanion extends UpdateCompanion<UserData> {
@@ -117,17 +212,32 @@ class UserCompanion extends UpdateCompanion<UserData> {
   final Value<String> name;
   final Value<DateTime> date;
   final Value<String> image;
+  final Value<String> imageCover;
+  final Value<int> ePoint;
+  final Value<int> mPoint;
+  final Value<int> hPoint;
+  final Value<int> rankPoint;
   const UserCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.date = const Value.absent(),
     this.image = const Value.absent(),
+    this.imageCover = const Value.absent(),
+    this.ePoint = const Value.absent(),
+    this.mPoint = const Value.absent(),
+    this.hPoint = const Value.absent(),
+    this.rankPoint = const Value.absent(),
   });
   UserCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
     this.date = const Value.absent(),
     @required String image,
+    this.imageCover = const Value.absent(),
+    this.ePoint = const Value.absent(),
+    this.mPoint = const Value.absent(),
+    this.hPoint = const Value.absent(),
+    this.rankPoint = const Value.absent(),
   })  : name = Value(name),
         image = Value(image);
   static Insertable<UserData> custom({
@@ -135,12 +245,22 @@ class UserCompanion extends UpdateCompanion<UserData> {
     Expression<String> name,
     Expression<DateTime> date,
     Expression<String> image,
+    Expression<String> imageCover,
+    Expression<int> ePoint,
+    Expression<int> mPoint,
+    Expression<int> hPoint,
+    Expression<int> rankPoint,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (date != null) 'date': date,
       if (image != null) 'image': image,
+      if (imageCover != null) 'image_cover': imageCover,
+      if (ePoint != null) 'e_point': ePoint,
+      if (mPoint != null) 'm_point': mPoint,
+      if (hPoint != null) 'h_point': hPoint,
+      if (rankPoint != null) 'rank_point': rankPoint,
     });
   }
 
@@ -148,12 +268,22 @@ class UserCompanion extends UpdateCompanion<UserData> {
       {Value<int> id,
       Value<String> name,
       Value<DateTime> date,
-      Value<String> image}) {
+      Value<String> image,
+      Value<String> imageCover,
+      Value<int> ePoint,
+      Value<int> mPoint,
+      Value<int> hPoint,
+      Value<int> rankPoint}) {
     return UserCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       date: date ?? this.date,
       image: image ?? this.image,
+      imageCover: imageCover ?? this.imageCover,
+      ePoint: ePoint ?? this.ePoint,
+      mPoint: mPoint ?? this.mPoint,
+      hPoint: hPoint ?? this.hPoint,
+      rankPoint: rankPoint ?? this.rankPoint,
     );
   }
 
@@ -172,6 +302,21 @@ class UserCompanion extends UpdateCompanion<UserData> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (imageCover.present) {
+      map['image_cover'] = Variable<String>(imageCover.value);
+    }
+    if (ePoint.present) {
+      map['e_point'] = Variable<int>(ePoint.value);
+    }
+    if (mPoint.present) {
+      map['m_point'] = Variable<int>(mPoint.value);
+    }
+    if (hPoint.present) {
+      map['h_point'] = Variable<int>(hPoint.value);
+    }
+    if (rankPoint.present) {
+      map['rank_point'] = Variable<int>(rankPoint.value);
+    }
     return map;
   }
 
@@ -181,7 +326,12 @@ class UserCompanion extends UpdateCompanion<UserData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('date: $date, ')
-          ..write('image: $image')
+          ..write('image: $image, ')
+          ..write('imageCover: $imageCover, ')
+          ..write('ePoint: $ePoint, ')
+          ..write('mPoint: $mPoint, ')
+          ..write('hPoint: $hPoint, ')
+          ..write('rankPoint: $rankPoint')
           ..write(')'))
         .toString();
   }
@@ -236,8 +386,69 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
     );
   }
 
+  final VerificationMeta _imageCoverMeta = const VerificationMeta('imageCover');
+  GeneratedTextColumn _imageCover;
   @override
-  List<GeneratedColumn> get $columns => [id, name, date, image];
+  GeneratedTextColumn get imageCover => _imageCover ??= _constructImageCover();
+  GeneratedTextColumn _constructImageCover() {
+    return GeneratedTextColumn(
+      'image_cover',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _ePointMeta = const VerificationMeta('ePoint');
+  GeneratedIntColumn _ePoint;
+  @override
+  GeneratedIntColumn get ePoint => _ePoint ??= _constructEPoint();
+  GeneratedIntColumn _constructEPoint() {
+    return GeneratedIntColumn(
+      'e_point',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _mPointMeta = const VerificationMeta('mPoint');
+  GeneratedIntColumn _mPoint;
+  @override
+  GeneratedIntColumn get mPoint => _mPoint ??= _constructMPoint();
+  GeneratedIntColumn _constructMPoint() {
+    return GeneratedIntColumn(
+      'm_point',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _hPointMeta = const VerificationMeta('hPoint');
+  GeneratedIntColumn _hPoint;
+  @override
+  GeneratedIntColumn get hPoint => _hPoint ??= _constructHPoint();
+  GeneratedIntColumn _constructHPoint() {
+    return GeneratedIntColumn(
+      'h_point',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _rankPointMeta = const VerificationMeta('rankPoint');
+  GeneratedIntColumn _rankPoint;
+  @override
+  GeneratedIntColumn get rankPoint => _rankPoint ??= _constructRankPoint();
+  GeneratedIntColumn _constructRankPoint() {
+    return GeneratedIntColumn(
+      'rank_point',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, date, image, imageCover, ePoint, mPoint, hPoint, rankPoint];
   @override
   $UserTable get asDslTable => this;
   @override
@@ -267,6 +478,28 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
           _imageMeta, image.isAcceptableOrUnknown(data['image'], _imageMeta));
     } else if (isInserting) {
       context.missing(_imageMeta);
+    }
+    if (data.containsKey('image_cover')) {
+      context.handle(
+          _imageCoverMeta,
+          imageCover.isAcceptableOrUnknown(
+              data['image_cover'], _imageCoverMeta));
+    }
+    if (data.containsKey('e_point')) {
+      context.handle(_ePointMeta,
+          ePoint.isAcceptableOrUnknown(data['e_point'], _ePointMeta));
+    }
+    if (data.containsKey('m_point')) {
+      context.handle(_mPointMeta,
+          mPoint.isAcceptableOrUnknown(data['m_point'], _mPointMeta));
+    }
+    if (data.containsKey('h_point')) {
+      context.handle(_hPointMeta,
+          hPoint.isAcceptableOrUnknown(data['h_point'], _hPointMeta));
+    }
+    if (data.containsKey('rank_point')) {
+      context.handle(_rankPointMeta,
+          rankPoint.isAcceptableOrUnknown(data['rank_point'], _rankPointMeta));
     }
     return context;
   }
@@ -757,13 +990,17 @@ class $QuizTable extends Quiz with TableInfo<$QuizTable, QuizData> {
 class PointData extends DataClass implements Insertable<PointData> {
   final int id;
   final int idCat;
-  final int point;
   final DateTime date;
+  final int ePoint;
+  final int mPoint;
+  final int hPoint;
   PointData(
       {@required this.id,
       @required this.idCat,
-      @required this.point,
-      @required this.date});
+      @required this.date,
+      @required this.ePoint,
+      @required this.mPoint,
+      @required this.hPoint});
   factory PointData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -772,9 +1009,14 @@ class PointData extends DataClass implements Insertable<PointData> {
     return PointData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       idCat: intType.mapFromDatabaseResponse(data['${effectivePrefix}id_cat']),
-      point: intType.mapFromDatabaseResponse(data['${effectivePrefix}point']),
       date:
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+      ePoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}e_point']),
+      mPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}m_point']),
+      hPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}h_point']),
     );
   }
   @override
@@ -786,11 +1028,17 @@ class PointData extends DataClass implements Insertable<PointData> {
     if (!nullToAbsent || idCat != null) {
       map['id_cat'] = Variable<int>(idCat);
     }
-    if (!nullToAbsent || point != null) {
-      map['point'] = Variable<int>(point);
-    }
     if (!nullToAbsent || date != null) {
       map['date'] = Variable<DateTime>(date);
+    }
+    if (!nullToAbsent || ePoint != null) {
+      map['e_point'] = Variable<int>(ePoint);
+    }
+    if (!nullToAbsent || mPoint != null) {
+      map['m_point'] = Variable<int>(mPoint);
+    }
+    if (!nullToAbsent || hPoint != null) {
+      map['h_point'] = Variable<int>(hPoint);
     }
     return map;
   }
@@ -800,9 +1048,13 @@ class PointData extends DataClass implements Insertable<PointData> {
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       idCat:
           idCat == null && nullToAbsent ? const Value.absent() : Value(idCat),
-      point:
-          point == null && nullToAbsent ? const Value.absent() : Value(point),
       date: date == null && nullToAbsent ? const Value.absent() : Value(date),
+      ePoint:
+          ePoint == null && nullToAbsent ? const Value.absent() : Value(ePoint),
+      mPoint:
+          mPoint == null && nullToAbsent ? const Value.absent() : Value(mPoint),
+      hPoint:
+          hPoint == null && nullToAbsent ? const Value.absent() : Value(hPoint),
     );
   }
 
@@ -812,8 +1064,10 @@ class PointData extends DataClass implements Insertable<PointData> {
     return PointData(
       id: serializer.fromJson<int>(json['id']),
       idCat: serializer.fromJson<int>(json['idCat']),
-      point: serializer.fromJson<int>(json['point']),
       date: serializer.fromJson<DateTime>(json['date']),
+      ePoint: serializer.fromJson<int>(json['ePoint']),
+      mPoint: serializer.fromJson<int>(json['mPoint']),
+      hPoint: serializer.fromJson<int>(json['hPoint']),
     );
   }
   @override
@@ -822,85 +1076,121 @@ class PointData extends DataClass implements Insertable<PointData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'idCat': serializer.toJson<int>(idCat),
-      'point': serializer.toJson<int>(point),
       'date': serializer.toJson<DateTime>(date),
+      'ePoint': serializer.toJson<int>(ePoint),
+      'mPoint': serializer.toJson<int>(mPoint),
+      'hPoint': serializer.toJson<int>(hPoint),
     };
   }
 
-  PointData copyWith({int id, int idCat, int point, DateTime date}) =>
+  PointData copyWith(
+          {int id,
+          int idCat,
+          DateTime date,
+          int ePoint,
+          int mPoint,
+          int hPoint}) =>
       PointData(
         id: id ?? this.id,
         idCat: idCat ?? this.idCat,
-        point: point ?? this.point,
         date: date ?? this.date,
+        ePoint: ePoint ?? this.ePoint,
+        mPoint: mPoint ?? this.mPoint,
+        hPoint: hPoint ?? this.hPoint,
       );
   @override
   String toString() {
     return (StringBuffer('PointData(')
           ..write('id: $id, ')
           ..write('idCat: $idCat, ')
-          ..write('point: $point, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('ePoint: $ePoint, ')
+          ..write('mPoint: $mPoint, ')
+          ..write('hPoint: $hPoint')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(idCat.hashCode, $mrjc(point.hashCode, date.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          idCat.hashCode,
+          $mrjc(
+              date.hashCode,
+              $mrjc(
+                  ePoint.hashCode, $mrjc(mPoint.hashCode, hPoint.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is PointData &&
           other.id == this.id &&
           other.idCat == this.idCat &&
-          other.point == this.point &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.ePoint == this.ePoint &&
+          other.mPoint == this.mPoint &&
+          other.hPoint == this.hPoint);
 }
 
 class PointCompanion extends UpdateCompanion<PointData> {
   final Value<int> id;
   final Value<int> idCat;
-  final Value<int> point;
   final Value<DateTime> date;
+  final Value<int> ePoint;
+  final Value<int> mPoint;
+  final Value<int> hPoint;
   const PointCompanion({
     this.id = const Value.absent(),
     this.idCat = const Value.absent(),
-    this.point = const Value.absent(),
     this.date = const Value.absent(),
+    this.ePoint = const Value.absent(),
+    this.mPoint = const Value.absent(),
+    this.hPoint = const Value.absent(),
   });
   PointCompanion.insert({
     this.id = const Value.absent(),
     @required int idCat,
-    @required int point,
     @required DateTime date,
+    @required int ePoint,
+    @required int mPoint,
+    @required int hPoint,
   })  : idCat = Value(idCat),
-        point = Value(point),
-        date = Value(date);
+        date = Value(date),
+        ePoint = Value(ePoint),
+        mPoint = Value(mPoint),
+        hPoint = Value(hPoint);
   static Insertable<PointData> custom({
     Expression<int> id,
     Expression<int> idCat,
-    Expression<int> point,
     Expression<DateTime> date,
+    Expression<int> ePoint,
+    Expression<int> mPoint,
+    Expression<int> hPoint,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (idCat != null) 'id_cat': idCat,
-      if (point != null) 'point': point,
       if (date != null) 'date': date,
+      if (ePoint != null) 'e_point': ePoint,
+      if (mPoint != null) 'm_point': mPoint,
+      if (hPoint != null) 'h_point': hPoint,
     });
   }
 
   PointCompanion copyWith(
       {Value<int> id,
       Value<int> idCat,
-      Value<int> point,
-      Value<DateTime> date}) {
+      Value<DateTime> date,
+      Value<int> ePoint,
+      Value<int> mPoint,
+      Value<int> hPoint}) {
     return PointCompanion(
       id: id ?? this.id,
       idCat: idCat ?? this.idCat,
-      point: point ?? this.point,
       date: date ?? this.date,
+      ePoint: ePoint ?? this.ePoint,
+      mPoint: mPoint ?? this.mPoint,
+      hPoint: hPoint ?? this.hPoint,
     );
   }
 
@@ -913,11 +1203,17 @@ class PointCompanion extends UpdateCompanion<PointData> {
     if (idCat.present) {
       map['id_cat'] = Variable<int>(idCat.value);
     }
-    if (point.present) {
-      map['point'] = Variable<int>(point.value);
-    }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
+    }
+    if (ePoint.present) {
+      map['e_point'] = Variable<int>(ePoint.value);
+    }
+    if (mPoint.present) {
+      map['m_point'] = Variable<int>(mPoint.value);
+    }
+    if (hPoint.present) {
+      map['h_point'] = Variable<int>(hPoint.value);
     }
     return map;
   }
@@ -927,8 +1223,10 @@ class PointCompanion extends UpdateCompanion<PointData> {
     return (StringBuffer('PointCompanion(')
           ..write('id: $id, ')
           ..write('idCat: $idCat, ')
-          ..write('point: $point, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('ePoint: $ePoint, ')
+          ..write('mPoint: $mPoint, ')
+          ..write('hPoint: $hPoint')
           ..write(')'))
         .toString();
   }
@@ -959,18 +1257,6 @@ class $PointTable extends Point with TableInfo<$PointTable, PointData> {
     );
   }
 
-  final VerificationMeta _pointMeta = const VerificationMeta('point');
-  GeneratedIntColumn _point;
-  @override
-  GeneratedIntColumn get point => _point ??= _constructPoint();
-  GeneratedIntColumn _constructPoint() {
-    return GeneratedIntColumn(
-      'point',
-      $tableName,
-      false,
-    );
-  }
-
   final VerificationMeta _dateMeta = const VerificationMeta('date');
   GeneratedDateTimeColumn _date;
   @override
@@ -983,8 +1269,45 @@ class $PointTable extends Point with TableInfo<$PointTable, PointData> {
     );
   }
 
+  final VerificationMeta _ePointMeta = const VerificationMeta('ePoint');
+  GeneratedIntColumn _ePoint;
   @override
-  List<GeneratedColumn> get $columns => [id, idCat, point, date];
+  GeneratedIntColumn get ePoint => _ePoint ??= _constructEPoint();
+  GeneratedIntColumn _constructEPoint() {
+    return GeneratedIntColumn(
+      'e_point',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _mPointMeta = const VerificationMeta('mPoint');
+  GeneratedIntColumn _mPoint;
+  @override
+  GeneratedIntColumn get mPoint => _mPoint ??= _constructMPoint();
+  GeneratedIntColumn _constructMPoint() {
+    return GeneratedIntColumn(
+      'm_point',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _hPointMeta = const VerificationMeta('hPoint');
+  GeneratedIntColumn _hPoint;
+  @override
+  GeneratedIntColumn get hPoint => _hPoint ??= _constructHPoint();
+  GeneratedIntColumn _constructHPoint() {
+    return GeneratedIntColumn(
+      'h_point',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, idCat, date, ePoint, mPoint, hPoint];
   @override
   $PointTable get asDslTable => this;
   @override
@@ -1005,17 +1328,29 @@ class $PointTable extends Point with TableInfo<$PointTable, PointData> {
     } else if (isInserting) {
       context.missing(_idCatMeta);
     }
-    if (data.containsKey('point')) {
-      context.handle(
-          _pointMeta, point.isAcceptableOrUnknown(data['point'], _pointMeta));
-    } else if (isInserting) {
-      context.missing(_pointMeta);
-    }
     if (data.containsKey('date')) {
       context.handle(
           _dateMeta, date.isAcceptableOrUnknown(data['date'], _dateMeta));
     } else if (isInserting) {
       context.missing(_dateMeta);
+    }
+    if (data.containsKey('e_point')) {
+      context.handle(_ePointMeta,
+          ePoint.isAcceptableOrUnknown(data['e_point'], _ePointMeta));
+    } else if (isInserting) {
+      context.missing(_ePointMeta);
+    }
+    if (data.containsKey('m_point')) {
+      context.handle(_mPointMeta,
+          mPoint.isAcceptableOrUnknown(data['m_point'], _mPointMeta));
+    } else if (isInserting) {
+      context.missing(_mPointMeta);
+    }
+    if (data.containsKey('h_point')) {
+      context.handle(_hPointMeta,
+          hPoint.isAcceptableOrUnknown(data['h_point'], _hPointMeta));
+    } else if (isInserting) {
+      context.missing(_hPointMeta);
     }
     return context;
   }
@@ -1126,7 +1461,6 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
         .toString();
   }
 
-  @override
   @override
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(name.hashCode, $mrjc(description.hashCode, icon.hashCode))));
@@ -1324,6 +1658,875 @@ class $CategoryTable extends Category
   }
 }
 
+class TitleData extends DataClass implements Insertable<TitleData> {
+  final int id;
+  final String title;
+  final int ePoint;
+  final int mPoint;
+  final int hPoint;
+  final String icon;
+  final bool isActive;
+  TitleData(
+      {@required this.id,
+      @required this.title,
+      @required this.ePoint,
+      @required this.mPoint,
+      @required this.hPoint,
+      @required this.icon,
+      @required this.isActive});
+  factory TitleData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
+    return TitleData(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      title:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
+      ePoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}e_point']),
+      mPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}m_point']),
+      hPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}h_point']),
+      icon: stringType.mapFromDatabaseResponse(data['${effectivePrefix}icon']),
+      isActive:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_active']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || ePoint != null) {
+      map['e_point'] = Variable<int>(ePoint);
+    }
+    if (!nullToAbsent || mPoint != null) {
+      map['m_point'] = Variable<int>(mPoint);
+    }
+    if (!nullToAbsent || hPoint != null) {
+      map['h_point'] = Variable<int>(hPoint);
+    }
+    if (!nullToAbsent || icon != null) {
+      map['icon'] = Variable<String>(icon);
+    }
+    if (!nullToAbsent || isActive != null) {
+      map['is_active'] = Variable<bool>(isActive);
+    }
+    return map;
+  }
+
+  TitleCompanion toCompanion(bool nullToAbsent) {
+    return TitleCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      ePoint:
+          ePoint == null && nullToAbsent ? const Value.absent() : Value(ePoint),
+      mPoint:
+          mPoint == null && nullToAbsent ? const Value.absent() : Value(mPoint),
+      hPoint:
+          hPoint == null && nullToAbsent ? const Value.absent() : Value(hPoint),
+      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
+      isActive: isActive == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isActive),
+    );
+  }
+
+  factory TitleData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return TitleData(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      ePoint: serializer.fromJson<int>(json['ePoint']),
+      mPoint: serializer.fromJson<int>(json['mPoint']),
+      hPoint: serializer.fromJson<int>(json['hPoint']),
+      icon: serializer.fromJson<String>(json['icon']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'ePoint': serializer.toJson<int>(ePoint),
+      'mPoint': serializer.toJson<int>(mPoint),
+      'hPoint': serializer.toJson<int>(hPoint),
+      'icon': serializer.toJson<String>(icon),
+      'isActive': serializer.toJson<bool>(isActive),
+    };
+  }
+
+  TitleData copyWith(
+          {int id,
+          String title,
+          int ePoint,
+          int mPoint,
+          int hPoint,
+          String icon,
+          bool isActive}) =>
+      TitleData(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        ePoint: ePoint ?? this.ePoint,
+        mPoint: mPoint ?? this.mPoint,
+        hPoint: hPoint ?? this.hPoint,
+        icon: icon ?? this.icon,
+        isActive: isActive ?? this.isActive,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TitleData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('ePoint: $ePoint, ')
+          ..write('mPoint: $mPoint, ')
+          ..write('hPoint: $hPoint, ')
+          ..write('icon: $icon, ')
+          ..write('isActive: $isActive')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          title.hashCode,
+          $mrjc(
+              ePoint.hashCode,
+              $mrjc(
+                  mPoint.hashCode,
+                  $mrjc(hPoint.hashCode,
+                      $mrjc(icon.hashCode, isActive.hashCode)))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is TitleData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.ePoint == this.ePoint &&
+          other.mPoint == this.mPoint &&
+          other.hPoint == this.hPoint &&
+          other.icon == this.icon &&
+          other.isActive == this.isActive);
+}
+
+class TitleCompanion extends UpdateCompanion<TitleData> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<int> ePoint;
+  final Value<int> mPoint;
+  final Value<int> hPoint;
+  final Value<String> icon;
+  final Value<bool> isActive;
+  const TitleCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.ePoint = const Value.absent(),
+    this.mPoint = const Value.absent(),
+    this.hPoint = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.isActive = const Value.absent(),
+  });
+  TitleCompanion.insert({
+    this.id = const Value.absent(),
+    @required String title,
+    @required int ePoint,
+    @required int mPoint,
+    @required int hPoint,
+    @required String icon,
+    @required bool isActive,
+  })  : title = Value(title),
+        ePoint = Value(ePoint),
+        mPoint = Value(mPoint),
+        hPoint = Value(hPoint),
+        icon = Value(icon),
+        isActive = Value(isActive);
+  static Insertable<TitleData> custom({
+    Expression<int> id,
+    Expression<String> title,
+    Expression<int> ePoint,
+    Expression<int> mPoint,
+    Expression<int> hPoint,
+    Expression<String> icon,
+    Expression<bool> isActive,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (ePoint != null) 'e_point': ePoint,
+      if (mPoint != null) 'm_point': mPoint,
+      if (hPoint != null) 'h_point': hPoint,
+      if (icon != null) 'icon': icon,
+      if (isActive != null) 'is_active': isActive,
+    });
+  }
+
+  TitleCompanion copyWith(
+      {Value<int> id,
+      Value<String> title,
+      Value<int> ePoint,
+      Value<int> mPoint,
+      Value<int> hPoint,
+      Value<String> icon,
+      Value<bool> isActive}) {
+    return TitleCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      ePoint: ePoint ?? this.ePoint,
+      mPoint: mPoint ?? this.mPoint,
+      hPoint: hPoint ?? this.hPoint,
+      icon: icon ?? this.icon,
+      isActive: isActive ?? this.isActive,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (ePoint.present) {
+      map['e_point'] = Variable<int>(ePoint.value);
+    }
+    if (mPoint.present) {
+      map['m_point'] = Variable<int>(mPoint.value);
+    }
+    if (hPoint.present) {
+      map['h_point'] = Variable<int>(hPoint.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TitleCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('ePoint: $ePoint, ')
+          ..write('mPoint: $mPoint, ')
+          ..write('hPoint: $hPoint, ')
+          ..write('icon: $icon, ')
+          ..write('isActive: $isActive')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TitleTable extends Title with TableInfo<$TitleTable, TitleData> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $TitleTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _titleMeta = const VerificationMeta('title');
+  GeneratedTextColumn _title;
+  @override
+  GeneratedTextColumn get title => _title ??= _constructTitle();
+  GeneratedTextColumn _constructTitle() {
+    return GeneratedTextColumn(
+      'title',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _ePointMeta = const VerificationMeta('ePoint');
+  GeneratedIntColumn _ePoint;
+  @override
+  GeneratedIntColumn get ePoint => _ePoint ??= _constructEPoint();
+  GeneratedIntColumn _constructEPoint() {
+    return GeneratedIntColumn(
+      'e_point',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _mPointMeta = const VerificationMeta('mPoint');
+  GeneratedIntColumn _mPoint;
+  @override
+  GeneratedIntColumn get mPoint => _mPoint ??= _constructMPoint();
+  GeneratedIntColumn _constructMPoint() {
+    return GeneratedIntColumn(
+      'm_point',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _hPointMeta = const VerificationMeta('hPoint');
+  GeneratedIntColumn _hPoint;
+  @override
+  GeneratedIntColumn get hPoint => _hPoint ??= _constructHPoint();
+  GeneratedIntColumn _constructHPoint() {
+    return GeneratedIntColumn(
+      'h_point',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _iconMeta = const VerificationMeta('icon');
+  GeneratedTextColumn _icon;
+  @override
+  GeneratedTextColumn get icon => _icon ??= _constructIcon();
+  GeneratedTextColumn _constructIcon() {
+    return GeneratedTextColumn(
+      'icon',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _isActiveMeta = const VerificationMeta('isActive');
+  GeneratedBoolColumn _isActive;
+  @override
+  GeneratedBoolColumn get isActive => _isActive ??= _constructIsActive();
+  GeneratedBoolColumn _constructIsActive() {
+    return GeneratedBoolColumn(
+      'is_active',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, ePoint, mPoint, hPoint, icon, isActive];
+  @override
+  $TitleTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'title';
+  @override
+  final String actualTableName = 'title';
+  @override
+  VerificationContext validateIntegrity(Insertable<TitleData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title'], _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('e_point')) {
+      context.handle(_ePointMeta,
+          ePoint.isAcceptableOrUnknown(data['e_point'], _ePointMeta));
+    } else if (isInserting) {
+      context.missing(_ePointMeta);
+    }
+    if (data.containsKey('m_point')) {
+      context.handle(_mPointMeta,
+          mPoint.isAcceptableOrUnknown(data['m_point'], _mPointMeta));
+    } else if (isInserting) {
+      context.missing(_mPointMeta);
+    }
+    if (data.containsKey('h_point')) {
+      context.handle(_hPointMeta,
+          hPoint.isAcceptableOrUnknown(data['h_point'], _hPointMeta));
+    } else if (isInserting) {
+      context.missing(_hPointMeta);
+    }
+    if (data.containsKey('icon')) {
+      context.handle(
+          _iconMeta, icon.isAcceptableOrUnknown(data['icon'], _iconMeta));
+    } else if (isInserting) {
+      context.missing(_iconMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active'], _isActiveMeta));
+    } else if (isInserting) {
+      context.missing(_isActiveMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TitleData map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return TitleData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $TitleTable createAlias(String alias) {
+    return $TitleTable(_db, alias);
+  }
+}
+
+class ItemData extends DataClass implements Insertable<ItemData> {
+  final int id;
+  final String name;
+  final String description;
+  final int quantity;
+  final int price;
+  final String type;
+  final String image;
+  ItemData(
+      {@required this.id,
+      @required this.name,
+      @required this.description,
+      @required this.quantity,
+      @required this.price,
+      @required this.type,
+      @required this.image});
+  factory ItemData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return ItemData(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      description: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}description']),
+      quantity:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}quantity']),
+      price: intType.mapFromDatabaseResponse(data['${effectivePrefix}price']),
+      type: stringType.mapFromDatabaseResponse(data['${effectivePrefix}type']),
+      image:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}image']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || quantity != null) {
+      map['quantity'] = Variable<int>(quantity);
+    }
+    if (!nullToAbsent || price != null) {
+      map['price'] = Variable<int>(price);
+    }
+    if (!nullToAbsent || type != null) {
+      map['type'] = Variable<String>(type);
+    }
+    if (!nullToAbsent || image != null) {
+      map['image'] = Variable<String>(image);
+    }
+    return map;
+  }
+
+  ItemCompanion toCompanion(bool nullToAbsent) {
+    return ItemCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      quantity: quantity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quantity),
+      price:
+          price == null && nullToAbsent ? const Value.absent() : Value(price),
+      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
+      image:
+          image == null && nullToAbsent ? const Value.absent() : Value(image),
+    );
+  }
+
+  factory ItemData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return ItemData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      price: serializer.fromJson<int>(json['price']),
+      type: serializer.fromJson<String>(json['type']),
+      image: serializer.fromJson<String>(json['image']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'quantity': serializer.toJson<int>(quantity),
+      'price': serializer.toJson<int>(price),
+      'type': serializer.toJson<String>(type),
+      'image': serializer.toJson<String>(image),
+    };
+  }
+
+  ItemData copyWith(
+          {int id,
+          String name,
+          String description,
+          int quantity,
+          int price,
+          String type,
+          String image}) =>
+      ItemData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        quantity: quantity ?? this.quantity,
+        price: price ?? this.price,
+        type: type ?? this.type,
+        image: image ?? this.image,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ItemData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('quantity: $quantity, ')
+          ..write('price: $price, ')
+          ..write('type: $type, ')
+          ..write('image: $image')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          name.hashCode,
+          $mrjc(
+              description.hashCode,
+              $mrjc(
+                  quantity.hashCode,
+                  $mrjc(price.hashCode,
+                      $mrjc(type.hashCode, image.hashCode)))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is ItemData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.quantity == this.quantity &&
+          other.price == this.price &&
+          other.type == this.type &&
+          other.image == this.image);
+}
+
+class ItemCompanion extends UpdateCompanion<ItemData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<int> quantity;
+  final Value<int> price;
+  final Value<String> type;
+  final Value<String> image;
+  const ItemCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.price = const Value.absent(),
+    this.type = const Value.absent(),
+    this.image = const Value.absent(),
+  });
+  ItemCompanion.insert({
+    @required int id,
+    @required String name,
+    @required String description,
+    @required int quantity,
+    @required int price,
+    @required String type,
+    @required String image,
+  })  : id = Value(id),
+        name = Value(name),
+        description = Value(description),
+        quantity = Value(quantity),
+        price = Value(price),
+        type = Value(type),
+        image = Value(image);
+  static Insertable<ItemData> custom({
+    Expression<int> id,
+    Expression<String> name,
+    Expression<String> description,
+    Expression<int> quantity,
+    Expression<int> price,
+    Expression<String> type,
+    Expression<String> image,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (quantity != null) 'quantity': quantity,
+      if (price != null) 'price': price,
+      if (type != null) 'type': type,
+      if (image != null) 'image': image,
+    });
+  }
+
+  ItemCompanion copyWith(
+      {Value<int> id,
+      Value<String> name,
+      Value<String> description,
+      Value<int> quantity,
+      Value<int> price,
+      Value<String> type,
+      Value<String> image}) {
+    return ItemCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      type: type ?? this.type,
+      image: image ?? this.image,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (price.present) {
+      map['price'] = Variable<int>(price.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (image.present) {
+      map['image'] = Variable<String>(image.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ItemCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('quantity: $quantity, ')
+          ..write('price: $price, ')
+          ..write('type: $type, ')
+          ..write('image: $image')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ItemTable extends Item with TableInfo<$ItemTable, ItemData> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $ItemTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn(
+      'id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn(
+      'name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  GeneratedTextColumn _description;
+  @override
+  GeneratedTextColumn get description =>
+      _description ??= _constructDescription();
+  GeneratedTextColumn _constructDescription() {
+    return GeneratedTextColumn(
+      'description',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _quantityMeta = const VerificationMeta('quantity');
+  GeneratedIntColumn _quantity;
+  @override
+  GeneratedIntColumn get quantity => _quantity ??= _constructQuantity();
+  GeneratedIntColumn _constructQuantity() {
+    return GeneratedIntColumn(
+      'quantity',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _priceMeta = const VerificationMeta('price');
+  GeneratedIntColumn _price;
+  @override
+  GeneratedIntColumn get price => _price ??= _constructPrice();
+  GeneratedIntColumn _constructPrice() {
+    return GeneratedIntColumn(
+      'price',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  GeneratedTextColumn _type;
+  @override
+  GeneratedTextColumn get type => _type ??= _constructType();
+  GeneratedTextColumn _constructType() {
+    return GeneratedTextColumn(
+      'type',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _imageMeta = const VerificationMeta('image');
+  GeneratedTextColumn _image;
+  @override
+  GeneratedTextColumn get image => _image ??= _constructImage();
+  GeneratedTextColumn _constructImage() {
+    return GeneratedTextColumn(
+      'image',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, quantity, price, type, image];
+  @override
+  $ItemTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'item';
+  @override
+  final String actualTableName = 'item';
+  @override
+  VerificationContext validateIntegrity(Insertable<ItemData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description'], _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(_quantityMeta,
+          quantity.isAcceptableOrUnknown(data['quantity'], _quantityMeta));
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('price')) {
+      context.handle(
+          _priceMeta, price.isAcceptableOrUnknown(data['price'], _priceMeta));
+    } else if (isInserting) {
+      context.missing(_priceMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type'], _typeMeta));
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('image')) {
+      context.handle(
+          _imageMeta, image.isAcceptableOrUnknown(data['image'], _imageMeta));
+    } else if (isInserting) {
+      context.missing(_imageMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  @override
+  ItemData map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return ItemData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $ItemTable createAlias(String alias) {
+    return $ItemTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserTable _user;
@@ -1334,13 +2537,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $PointTable get point => _point ??= $PointTable(this);
   $CategoryTable _category;
   $CategoryTable get category => _category ??= $CategoryTable(this);
+  $TitleTable _title;
+  $TitleTable get title => _title ??= $TitleTable(this);
+  $ItemTable _item;
+  $ItemTable get item => _item ??= $ItemTable(this);
   ModesDao _modesDao;
   ModesDao get modesDao => _modesDao ??= ModesDao(this as AppDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [user, quiz, point, category];
+      [user, quiz, point, category, title, item];
 }
 
 // **************************************************************************
@@ -1352,4 +2559,6 @@ mixin _$ModesDaoMixin on DatabaseAccessor<AppDatabase> {
   $QuizTable get quiz => attachedDatabase.quiz;
   $PointTable get point => attachedDatabase.point;
   $CategoryTable get category => attachedDatabase.category;
+  $TitleTable get title => attachedDatabase.title;
+  $ItemTable get item => attachedDatabase.item;
 }
