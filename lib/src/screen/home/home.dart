@@ -1,8 +1,8 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz/icons/app_icons.dart';
 import 'package:quiz/src/screen/category/category.dart';
-import 'package:quiz/src/screen/icons/app_icons.dart';
 import 'package:quiz/src/screen/rank/rank.dart';
 import 'package:quiz/src/screen/store/store.dart';
 import 'package:quiz/src/screen/user/user.dart';
@@ -43,6 +43,7 @@ class _BottomNavSate extends State<BottomNav> {
     return Scaffold(
       body: SizedBox.expand(
         child: PageView(
+
           controller: _controller,
           onPageChanged: (index) {
             setState(() {
@@ -62,7 +63,7 @@ class _BottomNavSate extends State<BottomNav> {
         onItemSelected: (index) => setState(() {
           _currentIndex = index;
           _controller.animateToPage(index,
-              duration: Duration(milliseconds: 300), curve: Curves.ease);
+              duration: Duration(milliseconds: 100), curve: Curves.linearToEaseOut);
         }),
         items: [
           BottomNavyBarItem(
@@ -76,7 +77,7 @@ class _BottomNavSate extends State<BottomNav> {
               title: Text("Store"),
               icon: Icon(Icons.store),
               inactiveColor: Colors.black,
-              activeColor: Colors.purpleAccent),
+              activeColor: Colors.red[200]),
           BottomNavyBarItem(
               textAlign: TextAlign.center,
               title: Text("User"),
