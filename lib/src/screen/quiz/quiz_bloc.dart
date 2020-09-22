@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiz/src/data/local/database.dart' as db;
 import 'package:quiz/src/data/models/quiz.dart';
 import 'package:quiz/src/data/remote/repo/quiz_repo.dart';
 import 'package:quiz/src/screen/quiz/quiz_event.dart';
 import 'package:quiz/src/screen/quiz/quiz_state.dart';
-import 'package:quiz/src/utils/Constants.dart';
 
 class QuizBloc extends Bloc<QuizEvent, QuizState> {
   var repo = QuizRepository();

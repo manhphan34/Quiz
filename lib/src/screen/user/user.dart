@@ -1,18 +1,34 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:quiz/src/data/local/database.dart';
 import 'package:quiz/src/screen/user/user_bloc.dart';
 import 'package:quiz/src/screen/user/user_event.dart';
 import 'package:quiz/src/screen/user/user_state.dart';
+import 'package:quiz/src/utils/Constants.dart';
+import 'package:quiz/src/utils/utils.dart';
 import 'package:quiz/src/widget/loader.dart';
 
-class User extends StatelessWidget {
+class User extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _UserState();
+  }
+}
+
+class _UserState extends State<User> {
   UserData user;
   UserBloc _userBloc;
+  List<TitleData> titles = List();
+  var picker = ImagePicker();
 
-  User() {
+  @override
+  void initState() {
+    super.initState();
     _userBloc = UserBloc();
     _userBloc.add(UserLoadInformationEvent());
   }
@@ -30,7 +46,10 @@ class User extends StatelessWidget {
       body: BlocProvider(
         create: (context) => _userBloc,
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-          if (state is UserInitialState) {
+          if (state is UserLoadedInformationState) {
+            user = state.user;
+            _userBloc.add(UserGetTitlesEvent());
+          } else if (state is UserInitialState || user == null) {
             return Scaffold(
               body: Container(
                 child: Container(
@@ -46,9 +65,12 @@ class User extends StatelessWidget {
                 ),
               ),
             );
-          } else if (state is UserLoadedInformationState) {
-            user = state.user;
+          } else if (state is UserGetTitlesState) {
+            titles = state.titles;
+          } else if (state is UserUpdateStatusTitleState) {
+            _userBloc.add(UserGetTitlesEvent());
           }
+          print(user.toString());
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -62,13 +84,18 @@ class User extends StatelessWidget {
                       shape: CircleBorder(),
                       elevation: 0,
                       child: Icon(Icons.edit),
-                      onPressed: () {},
+                      onPressed: () {
+                        _updateImage().then((value) {
+                          _userBloc.add(
+                              UserUpdateCoverImageEvent(file: File(value)));
+                        });
+                      },
                     )
                   ],
                 ),
                 const SizedBox(height: 10.0),
-                UserPoint(context),
-                TitleInfo(),
+                UserPoint(user),
+                TitleInfo(titles, user.mobile),
               ],
             ),
           );
@@ -81,43 +108,38 @@ class User extends StatelessWidget {
     if (path == null || path.isEmpty) {
       return AssetImage("assets/images/cover.jpg");
     }
-    return FileImage(File(path));
+    return NetworkImage(path);
+  }
+
+  Future<String> _updateImage() async {
+    final picketFile = await picker.getImage(source: ImageSource.gallery);
+    return picketFile.path;
   }
 }
 
 class UserPoint extends StatelessWidget {
-  PointData _pointData;
-  UserBloc _userBloc;
+  UserData user;
+  List<TitleData> titles;
 
-  UserPoint(BuildContext context) {
-    _userBloc = BlocProvider.of<UserBloc>(context);
-    _userBloc.add(UserLoadPointEvent());
-  }
+  UserPoint(this.user);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        if (state is UserLoadedPointState) {
-          _pointData = state.point;
-        }
-        return Container(
-          padding: EdgeInsets.all(10),
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Container(
+        alignment: Alignment.topLeft,
+        child: Card(
           child: Container(
             alignment: Alignment.topLeft,
-            child: Card(
-              child: Container(
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.all(15),
-                child: Container(
-                  width: double.infinity,
-                  child: _buildPoint(),
-                ),
-              ),
+            padding: EdgeInsets.all(15),
+            child: Container(
+              width: double.infinity,
+              child: _buildPoint(),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -137,7 +159,10 @@ class UserPoint extends StatelessWidget {
             margin: EdgeInsets.only(top: 8),
             child: Text(
               value.toString(),
-              style: TextStyle(color: Colors.black, fontSize: 16,fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500),
             ),
           )
         ],
@@ -146,19 +171,19 @@ class UserPoint extends StatelessWidget {
   }
 
   Widget _buildPoint() {
-    if (_pointData != null) {
+    if (user != null) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildPointItem("assets/images/score.png", _pointData.hPoint),
+          _buildPointItem("assets/images/score.png", user.rankPoint),
           SizedBox(width: 30),
-          _buildPointItem("assets/images/rank.png", _pointData.hPoint),
+          _buildPointItem("assets/images/rank.png", user.rank),
           SizedBox(width: 30),
-          _buildPointItem("assets/images/bronze.png", _pointData.ePoint),
+          _buildPointItem("assets/images/bronze.png", user.bronzePoint),
           SizedBox(width: 30),
-          _buildPointItem("assets/images/silver.png", _pointData.mPoint),
+          _buildPointItem("assets/images/silver.png", user.silverPoint),
           SizedBox(width: 30),
-          _buildPointItem("assets/images/gold.png", _pointData.hPoint),
+          _buildPointItem("assets/images/gold.png", user.goldPoint),
         ],
       );
     } else {
@@ -181,114 +206,157 @@ class UserPoint extends StatelessWidget {
 }
 
 class TitleInfo extends StatelessWidget {
-  List<TitleData> titles = [
-    TitleData(
-        icon: "",
-        title: "Title 1",
-        id: 1,
-        ePoint: 1,
-        hPoint: 3,
-        mPoint: 5,
-        isActive: true),
-    TitleData(
-        icon: "",
-        title: "Title 2",
-        id: 1,
-        ePoint: 1,
-        hPoint: 3,
-        mPoint: 5,
-        isActive: true),
-    TitleData(
-        icon: "",
-        title: "Title 3",
-        id: 1,
-        ePoint: 1,
-        hPoint: 3,
-        mPoint: 5,
-        isActive: true),
-    TitleData(
-        icon: "",
-        title: "Title 3",
-        id: 1,
-        ePoint: 1,
-        hPoint: 3,
-        mPoint: 5,
-        isActive: true),
-    TitleData(
-        icon: "",
-        title: "Title 3",
-        id: 1,
-        ePoint: 1,
-        hPoint: 3,
-        mPoint: 5,
-        isActive: true),
-    TitleData(
-        icon: "",
-        title: "Title 3",
-        id: 1,
-        ePoint: 1,
-        hPoint: 3,
-        mPoint: 5,
-        isActive: true),
-  ];
+  List<TitleData> titles;
+  final String mobile;
+  int currentId = -1;
+
+  TitleInfo(this.titles, this.mobile) {
+    for (int i = 0; i < titles.length; i++) {
+      if (titles[i].status == TITLE_IN_USE) {
+        currentId = titles[i].id;
+        return;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
-            alignment: Alignment.topLeft,
-            child: Text(
-              "Title",
-              style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        return Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Title",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
               ),
-              textAlign: TextAlign.left,
-            ),
+              Card(
+                color: Colors.red,
+                child: Container(
+                    color: Colors.white,
+                    alignment: Alignment.topRight,
+                    child: Column(
+                      children: _buildTitles(context),
+                    )),
+              )
+            ],
           ),
-          Card(
-            color: Colors.red,
-            child: Container(
-                color: Colors.white,
-                alignment: Alignment.topRight,
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  children: _buildTitles(),
-                )),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 
-  List<Widget> _buildTitles() {
+  List<Widget> _buildTitles(BuildContext context) {
     var list = new List<Widget>();
     titles.forEach((element) {
-      list.add(_buildItemTitle(element));
+      list.add(_buildItemTitle(context, element));
     });
     return list;
   }
 
-  Widget _buildItemTitle(TitleData title) {
-    return Row(
-      children: [
-        Container(
-          child: Image.asset(
-            "assets/images/art.png",
-            width: 24,
-            height: 24,
-          ),
+  Widget _buildItemTitle(BuildContext context, TitleData title) {
+    return Material(
+      color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          if (title.status == TITLE_NOT_ACTIVE ||
+              title.status == TITLE_IN_USE) {
+            return;
+          }
+          context.bloc<UserBloc>().add(UserUpdateStatusTitleEvent(
+              mobile: mobile,
+              title: title.title,
+              currentTitleId: currentId,
+              newTitleId: title.id,
+              status: TITLE_IN_USE));
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 8),
+                      child: Image.asset(
+                        getAssetImagePath(title.icon),
+                        width: 48,
+                        height: 48,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 16),
+                      child: Text(
+                        title.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: title.status == TITLE_IN_USE
+                              ? Colors.red
+                              : Colors.black,
+                          fontWeight: title.status == TITLE_IN_USE
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 1,
+                  color: Colors.black12,
+                ),
+              ],
+            ),
+            Visibility(
+              visible: title.status == TITLE_NOT_ACTIVE ? true : false,
+              child: Container(
+                color: Colors.black26,
+                width: double.infinity,
+                height: 48,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              height: 48,
+              width: double.infinity,
+              alignment: Alignment.centerRight,
+              child: _buildStatus(title.status),
+            ),
+          ],
         ),
-        Container(
-          child: Text(title.title),
-        )
-      ],
+      ),
     );
+  }
+
+  Widget _buildStatus(String status) {
+    if (status == TITLE_ACTIVE) {
+      return Text(
+        "Active",
+        style: TextStyle(color: Colors.black, fontSize: 14),
+      );
+    } else if (status == TITLE_NOT_ACTIVE) {
+      return Text(
+        "Not Active",
+        style: TextStyle(color: Colors.black, fontSize: 14),
+      );
+    } else {
+      return Text(
+        "Used",
+        style: TextStyle(
+            color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+      );
+    }
   }
 }
 

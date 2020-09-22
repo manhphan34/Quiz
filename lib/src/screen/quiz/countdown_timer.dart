@@ -51,7 +51,7 @@ class _CountDownTimerState extends State<CountDownTimer>
   }
 
   void stopTimer() {
-    controller.dispose();
+    controller.stop(canceled: true);
   }
 
   void startTimer(int duration) {

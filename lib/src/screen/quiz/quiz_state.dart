@@ -25,5 +25,5 @@ class UserUseItemState extends QuizState {
   UserUseItemState(this.item, this.isSingle);
 }
 
-class UserUseSingleItemState extends QuizState {
-}
+class UserUseSingleItemState extends QuizState {}
+

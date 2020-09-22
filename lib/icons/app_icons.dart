@@ -24,4 +24,5 @@ class AppIcons {
   static const IconData armorial = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData podium = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData basket = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData swallowtail_flag = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

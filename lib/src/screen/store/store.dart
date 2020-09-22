@@ -60,6 +60,12 @@ class _StoreState extends State<Store> {
           )
         ],
         child: Scaffold(
+          appBar: AppBar(
+            title: Text("Store"),
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: Colors.red[200],
+          ),
           body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -86,7 +92,6 @@ class _StoreState extends State<Store> {
           this.user = state.user;
         }
         return Container(
-          margin: EdgeInsets.only(top: 25),
           height: 80,
           child: Card(
             elevation: 16,
@@ -140,6 +145,7 @@ class _StoreState extends State<Store> {
       } else if (state is StoreUpdateItemState) {
         if (isShowing) {
           showToastSuccess("Buy item success");
+          _storeBloc.add(StoreGetItemEvent());
           isShowing = false;
         }
       }
@@ -294,7 +300,7 @@ class _StoreState extends State<Store> {
     } else {
       hPoint = hPoint - item.price;
     }
-    _userBloc.add(UserUdpatePointEvent(
+    _userBloc.add(UserUpdatePointEvent(
         id: user.id, hPoint: hPoint, ePoint: ePoint, mPoint: mPoint));
   }
 

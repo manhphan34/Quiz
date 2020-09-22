@@ -1,7 +1,7 @@
 import 'package:quiz/src/data/local/database.dart';
+import 'package:quiz/src/data/models/user_rank.dart';
 
-class UserState{
-}
+class UserState {}
 
 class UserInitialState extends UserState {}
 
@@ -31,4 +31,30 @@ class UserLoadedPointState extends UserState {
   final PointData point;
 
   UserLoadedPointState({this.point});
+}
+
+class UserGetTitlesState extends UserState {
+  final List<TitleData> titles;
+
+  UserGetTitlesState({this.titles});
+}
+
+class UserUpdateStatusTitleState extends UserState {}
+
+class UserCheckTitleState extends UserState {
+  final TitleData title;
+
+  UserCheckTitleState(this.title);
+}
+
+class GetAllUserState extends UserState {
+  final List<UserRank> ranks;
+
+  GetAllUserState(this.ranks);
+}
+
+class UserUpdateCoverImageState extends UserState {
+  final UserData user;
+
+  UserUpdateCoverImageState({this.user});
 }

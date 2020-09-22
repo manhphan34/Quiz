@@ -6,9 +6,11 @@ import 'package:quiz/src/data/models/user.dart';
 part 'database.g.dart';
 
 class User extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer()();
 
   TextColumn get name => text().named('name')();
+
+  TextColumn get mobile => text()();
 
   DateTimeColumn get date => dateTime().nullable()();
 
@@ -22,7 +24,15 @@ class User extends Table {
 
   IntColumn get hPoint => integer().nullable()();
 
+  IntColumn get goldPoint => integer().nullable()();
+
+  IntColumn get silverPoint => integer().nullable()();
+
+  IntColumn get bronzePoint => integer().nullable()();
+
   IntColumn get rankPoint => integer().nullable()();
+
+  IntColumn get rank => integer().nullable()();
 }
 
 class Category extends Table {
@@ -71,7 +81,7 @@ class Point extends Table {
 }
 
 class Title extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer()();
 
   TextColumn get title => text()();
 
@@ -83,7 +93,7 @@ class Title extends Table {
 
   TextColumn get icon => text()();
 
-  BoolColumn get isActive => boolean()();
+  TextColumn get status => text()();
 }
 
 class Item extends Table {
@@ -132,9 +142,7 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
 
   Future<List<QuizData>> get getQuizzes => select(quiz).get();
 
-  Future<List<TitleData>> getTitles() {
-    return (select(title)..where((tbl) => tbl.isActive.equals(true))).get();
-  }
+  Future<List<TitleData>> get getTitles => select(title).get();
 
   Future<List<ItemData>> get getItems => select(item).get();
 
@@ -161,6 +169,10 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
     await batch((batch) => {batch.insertAll(item, items)});
   }
 
+  Future<void> insertTitles({List<TitleCompanion> items}) async {
+    await batch((batch) => {batch.insertAll(title, items)});
+  }
+
   Future<void> insertPoint(PointCompanion pointCompanion) {
     return into(point).insert(pointCompanion);
   }
@@ -171,10 +183,39 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
     );
   }
 
+  Future updateCoverImage(int id, String path) {
+    return (update(user)..where((t) => t.id.equals(id))).write(
+      UserCompanion(imageCover: Value(path)),
+    );
+  }
+
+  Future updateRank(int id, int pos) {
+    return (update(user)..where((t) => t.id.equals(id))).write(
+      UserCompanion(rank: Value(pos)),
+    );
+  }
+
+  Future updateTitleStatus(int id, String status) {
+    return (update(title)..where((t) => t.id.equals(id))).write(
+      TitleCompanion(status: Value(status)),
+    );
+  }
+
   Future updateUserPoint(int id, int ePoint, int mPoint, int hPoint) {
     return (update(user)..where((t) => t.id.equals(id))).write(
       UserCompanion(
           ePoint: Value(ePoint), mPoint: Value(mPoint), hPoint: Value(hPoint)),
+    );
+  }
+
+  Future updateUserMedal(
+      int id, int bronzePoint, int silverPoint, int goldPoint, int rankPoint) {
+    return (update(user)..where((t) => t.id.equals(id))).write(
+      UserCompanion(
+          bronzePoint: Value(bronzePoint),
+          silverPoint: Value(silverPoint),
+          goldPoint: Value(goldPoint),
+          rankPoint: Value(rankPoint)),
     );
   }
 

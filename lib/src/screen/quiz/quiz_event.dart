@@ -1,8 +1,6 @@
 import 'package:quiz/src/data/local/database.dart';
 
-class QuizEvent{
-
-}
+class QuizEvent {}
 
 class LoadQuizEvent extends QuizEvent {
   final amount;
@@ -18,13 +16,13 @@ class UpdateDateTimerEvent extends QuizEvent {
   UpdateDateTimerEvent(this.time);
 }
 
-class UpdateTimeOutEvent extends QuizEvent{
+class UpdateTimeOutEvent extends QuizEvent {
   final bool timeout;
 
   UpdateTimeOutEvent(this.timeout);
 }
 
-class UserUseItemEvent extends QuizEvent{
+class UserUseItemEvent extends QuizEvent {
   final ItemData item;
   final bool isSingle;
 

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:quiz/src/data/local/database.dart' as local;
 import 'package:quiz/src/data/models/quiz.dart';
 import 'package:quiz/src/screen/home/home.dart';
@@ -304,6 +306,7 @@ class _QuestionState extends State<Question> {
   bool _isUseSingleItem = false;
   local.UserData user;
   String difficult;
+  bool isCheckTitle = false;
 
   _QuestionState({this.quizzes, this.difficult});
 
@@ -547,37 +550,174 @@ class _QuestionState extends State<Question> {
     }
   }
 
+  Widget _buildTitleIncrement(local.TitleData title) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+        padding: EdgeInsets.only(right: 12, left: 12),
+        alignment: Alignment.center,
+        width: double.infinity,
+        height: double.infinity,
+        child: Container(
+          alignment: Alignment.center,
+          width: double.infinity,
+          height: 300,
+          child: Container(
+            color: Colors.black,
+            child: Stack(
+              children: [
+                Container(
+                    width: double.infinity,
+                    child: Lottie.asset(getAssetImagePath("fire_works_1.json"),
+                        height: 300, width: double.infinity)),
+                Container(
+                  alignment: Alignment.topCenter,
+                  margin: EdgeInsets.only(bottom: 32, top: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 64),
+                        child: Text(
+                          "Congratulations".toUpperCase(),
+                          style: GoogleFonts.vollkorn(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                              child: Text(
+                            "New Rank : ".toUpperCase(),
+                            style: GoogleFonts.vollkorn(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          )),
+                          Container(
+                              child: Text(
+                            title.title.toUpperCase(),
+                            style: GoogleFonts.vollkorn(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ))
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: Text(
+                              "New Medal : ".toUpperCase(),
+                              style: GoogleFonts.vollkorn(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ),
+                          Container(
+                            child: Image.asset(
+                              getAssetImagePath(title.icon),
+                              width: 100,
+                              height: 100,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 300,
+                  alignment: Alignment.bottomCenter,
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Close",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildResult(int result) {
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: BlocProvider(
-        create: (context) => _userBloc,
+      child: BlocProvider.value(
+        value: _userBloc,
         child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is UserLoadedInformationState) {
               user = state.user;
+            } else if (state is UserCheckTitleState) {
+              Timer(Duration(milliseconds: 300), () {
+                showDialog(
+                    context: context, child: _buildTitleIncrement(state.title));
+              });
             }
+            int bronzePoint = user.bronzePoint;
+            int silverPoint = user.silverPoint;
+            int goldPoint = user.goldPoint;
             int ePoint = user.ePoint;
             int mPoint = user.mPoint;
             int hPoint = user.hPoint;
-            int rankPoint = user.rankPoint;
+            int rankPoint = user.rankPoint == null ? 0 : user.rankPoint;
             int eResult = 0;
             int mResult = 0;
             int hResult = 0;
             int rankPointResult = 0;
 
             if (difficult.toLowerCase() == EASY_MODE) {
+              bronzePoint = bronzePoint + result;
               ePoint = ePoint + result;
               eResult = result;
               rankPointResult = result;
             } else if (difficult.toLowerCase() == HARD_MODE) {
+              goldPoint = goldPoint + result;
               hPoint = hPoint + result;
               hResult = result;
               rankPointResult = result * 3;
             } else {
+              silverPoint = silverPoint + result;
               mPoint = mPoint + result;
               mResult = result;
               rankPointResult = result * 2;
+            }
+            var rankPointFinal = rankPoint + rankPointResult;
+            if (!isCheckTitle) {
+              _userBloc.add(
+                  UserCheckTitleEvent(goldPoint, silverPoint, bronzePoint));
+              _userBloc.add(
+                UserUpdateMedalEvent(
+                    id: user.id,
+                    mobile: user.mobile,
+                    bronzePoint: bronzePoint,
+                    silverPoint: silverPoint,
+                    goldPoint: goldPoint,
+                    rankPoint: rankPointFinal,
+                    ePoint: ePoint,
+                    mPoint: mPoint,
+                    hPoint: hPoint),
+              );
+              isCheckTitle = true;
             }
 
             return Scaffold(
@@ -657,17 +797,17 @@ class _QuestionState extends State<Question> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildItemResult(
-                              getAssetImagePath("bronze.png"), ePoint, eResult),
+                          _buildItemResult(getAssetImagePath("bronze.png"),
+                              bronzePoint, eResult),
                           SizedBox(width: 30),
-                          _buildItemResult(
-                              getAssetImagePath("silver.png"), mPoint, mResult),
+                          _buildItemResult(getAssetImagePath("silver.png"),
+                              silverPoint, mResult),
                           SizedBox(width: 30),
-                          _buildItemResult(
-                              getAssetImagePath("gold.png"), hPoint, hResult),
+                          _buildItemResult(getAssetImagePath("gold.png"),
+                              goldPoint, hResult),
                           SizedBox(width: 30),
-                          _buildItemResult(
-                              getAssetImagePath("score.png"), rankPoint, rankPointResult),
+                          _buildItemResult(getAssetImagePath("score.png"),
+                              rankPoint + rankPointResult, rankPointResult),
                         ],
                       ),
                       SizedBox(

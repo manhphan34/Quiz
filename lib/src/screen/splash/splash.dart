@@ -26,9 +26,9 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
         Duration(seconds: 3),
             () {
           if (!value) {
-            Navigator.pushNamed(context, "/intro");
+            Navigator.pushReplacementNamed(context, "/intro");
           } else {
-            Navigator.pushNamed(context, "/home");
+            Navigator.pushReplacementNamed(context, "/home");
           }
         },
       );

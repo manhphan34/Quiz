@@ -43,6 +43,7 @@ class _BottomNavSate extends State<BottomNav> {
     return Scaffold(
       body: SizedBox.expand(
         child: PageView(
+
           controller: _controller,
           onPageChanged: (index) {
             setState(() {
@@ -62,7 +63,7 @@ class _BottomNavSate extends State<BottomNav> {
         onItemSelected: (index) => setState(() {
           _currentIndex = index;
           _controller.animateToPage(index,
-              duration: Duration(milliseconds: 300), curve: Curves.ease);
+              duration: Duration(milliseconds: 100), curve: Curves.linearToEaseOut);
         }),
         items: [
           BottomNavyBarItem(

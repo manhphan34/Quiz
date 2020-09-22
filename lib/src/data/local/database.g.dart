@@ -10,23 +10,33 @@ part of 'database.dart';
 class UserData extends DataClass implements Insertable<UserData> {
   final int id;
   final String name;
+  final String mobile;
   final DateTime date;
   final String image;
   final String imageCover;
   final int ePoint;
   final int mPoint;
   final int hPoint;
+  final int goldPoint;
+  final int silverPoint;
+  final int bronzePoint;
   final int rankPoint;
+  final int rank;
   UserData(
       {@required this.id,
       @required this.name,
+      @required this.mobile,
       this.date,
       @required this.image,
       this.imageCover,
       this.ePoint,
       this.mPoint,
       this.hPoint,
-      this.rankPoint});
+      this.goldPoint,
+      this.silverPoint,
+      this.bronzePoint,
+      this.rankPoint,
+      this.rank});
   factory UserData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -36,6 +46,8 @@ class UserData extends DataClass implements Insertable<UserData> {
     return UserData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      mobile:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}mobile']),
       date:
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
       image:
@@ -48,8 +60,15 @@ class UserData extends DataClass implements Insertable<UserData> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}m_point']),
       hPoint:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}h_point']),
+      goldPoint:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}gold_point']),
+      silverPoint: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}silver_point']),
+      bronzePoint: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}bronze_point']),
       rankPoint:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}rank_point']),
+      rank: intType.mapFromDatabaseResponse(data['${effectivePrefix}rank']),
     );
   }
   @override
@@ -60,6 +79,9 @@ class UserData extends DataClass implements Insertable<UserData> {
     }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || mobile != null) {
+      map['mobile'] = Variable<String>(mobile);
     }
     if (!nullToAbsent || date != null) {
       map['date'] = Variable<DateTime>(date);
@@ -79,8 +101,20 @@ class UserData extends DataClass implements Insertable<UserData> {
     if (!nullToAbsent || hPoint != null) {
       map['h_point'] = Variable<int>(hPoint);
     }
+    if (!nullToAbsent || goldPoint != null) {
+      map['gold_point'] = Variable<int>(goldPoint);
+    }
+    if (!nullToAbsent || silverPoint != null) {
+      map['silver_point'] = Variable<int>(silverPoint);
+    }
+    if (!nullToAbsent || bronzePoint != null) {
+      map['bronze_point'] = Variable<int>(bronzePoint);
+    }
     if (!nullToAbsent || rankPoint != null) {
       map['rank_point'] = Variable<int>(rankPoint);
+    }
+    if (!nullToAbsent || rank != null) {
+      map['rank'] = Variable<int>(rank);
     }
     return map;
   }
@@ -89,6 +123,8 @@ class UserData extends DataClass implements Insertable<UserData> {
     return UserCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      mobile:
+          mobile == null && nullToAbsent ? const Value.absent() : Value(mobile),
       date: date == null && nullToAbsent ? const Value.absent() : Value(date),
       image:
           image == null && nullToAbsent ? const Value.absent() : Value(image),
@@ -101,9 +137,19 @@ class UserData extends DataClass implements Insertable<UserData> {
           mPoint == null && nullToAbsent ? const Value.absent() : Value(mPoint),
       hPoint:
           hPoint == null && nullToAbsent ? const Value.absent() : Value(hPoint),
+      goldPoint: goldPoint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(goldPoint),
+      silverPoint: silverPoint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(silverPoint),
+      bronzePoint: bronzePoint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bronzePoint),
       rankPoint: rankPoint == null && nullToAbsent
           ? const Value.absent()
           : Value(rankPoint),
+      rank: rank == null && nullToAbsent ? const Value.absent() : Value(rank),
     );
   }
 
@@ -113,13 +159,18 @@ class UserData extends DataClass implements Insertable<UserData> {
     return UserData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      mobile: serializer.fromJson<String>(json['mobile']),
       date: serializer.fromJson<DateTime>(json['date']),
       image: serializer.fromJson<String>(json['image']),
       imageCover: serializer.fromJson<String>(json['imageCover']),
       ePoint: serializer.fromJson<int>(json['ePoint']),
       mPoint: serializer.fromJson<int>(json['mPoint']),
       hPoint: serializer.fromJson<int>(json['hPoint']),
+      goldPoint: serializer.fromJson<int>(json['goldPoint']),
+      silverPoint: serializer.fromJson<int>(json['silverPoint']),
+      bronzePoint: serializer.fromJson<int>(json['bronzePoint']),
       rankPoint: serializer.fromJson<int>(json['rankPoint']),
+      rank: serializer.fromJson<int>(json['rank']),
     );
   }
   @override
@@ -128,49 +179,69 @@ class UserData extends DataClass implements Insertable<UserData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'mobile': serializer.toJson<String>(mobile),
       'date': serializer.toJson<DateTime>(date),
       'image': serializer.toJson<String>(image),
       'imageCover': serializer.toJson<String>(imageCover),
       'ePoint': serializer.toJson<int>(ePoint),
       'mPoint': serializer.toJson<int>(mPoint),
       'hPoint': serializer.toJson<int>(hPoint),
+      'goldPoint': serializer.toJson<int>(goldPoint),
+      'silverPoint': serializer.toJson<int>(silverPoint),
+      'bronzePoint': serializer.toJson<int>(bronzePoint),
       'rankPoint': serializer.toJson<int>(rankPoint),
+      'rank': serializer.toJson<int>(rank),
     };
   }
 
   UserData copyWith(
           {int id,
           String name,
+          String mobile,
           DateTime date,
           String image,
           String imageCover,
           int ePoint,
           int mPoint,
           int hPoint,
-          int rankPoint}) =>
+          int goldPoint,
+          int silverPoint,
+          int bronzePoint,
+          int rankPoint,
+          int rank}) =>
       UserData(
         id: id ?? this.id,
         name: name ?? this.name,
+        mobile: mobile ?? this.mobile,
         date: date ?? this.date,
         image: image ?? this.image,
         imageCover: imageCover ?? this.imageCover,
         ePoint: ePoint ?? this.ePoint,
         mPoint: mPoint ?? this.mPoint,
         hPoint: hPoint ?? this.hPoint,
+        goldPoint: goldPoint ?? this.goldPoint,
+        silverPoint: silverPoint ?? this.silverPoint,
+        bronzePoint: bronzePoint ?? this.bronzePoint,
         rankPoint: rankPoint ?? this.rankPoint,
+        rank: rank ?? this.rank,
       );
   @override
   String toString() {
     return (StringBuffer('UserData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('mobile: $mobile, ')
           ..write('date: $date, ')
           ..write('image: $image, ')
           ..write('imageCover: $imageCover, ')
           ..write('ePoint: $ePoint, ')
           ..write('mPoint: $mPoint, ')
           ..write('hPoint: $hPoint, ')
-          ..write('rankPoint: $rankPoint')
+          ..write('goldPoint: $goldPoint, ')
+          ..write('silverPoint: $silverPoint, ')
+          ..write('bronzePoint: $bronzePoint, ')
+          ..write('rankPoint: $rankPoint, ')
+          ..write('rank: $rank')
           ..write(')'))
         .toString();
   }
@@ -181,109 +252,161 @@ class UserData extends DataClass implements Insertable<UserData> {
       $mrjc(
           name.hashCode,
           $mrjc(
-              date.hashCode,
+              mobile.hashCode,
               $mrjc(
-                  image.hashCode,
+                  date.hashCode,
                   $mrjc(
-                      imageCover.hashCode,
+                      image.hashCode,
                       $mrjc(
-                          ePoint.hashCode,
+                          imageCover.hashCode,
                           $mrjc(
-                              mPoint.hashCode,
+                              ePoint.hashCode,
                               $mrjc(
-                                  hPoint.hashCode, rankPoint.hashCode)))))))));
+                                  mPoint.hashCode,
+                                  $mrjc(
+                                      hPoint.hashCode,
+                                      $mrjc(
+                                          goldPoint.hashCode,
+                                          $mrjc(
+                                              silverPoint.hashCode,
+                                              $mrjc(
+                                                  bronzePoint.hashCode,
+                                                  $mrjc(rankPoint.hashCode,
+                                                      rank.hashCode))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is UserData &&
           other.id == this.id &&
           other.name == this.name &&
+          other.mobile == this.mobile &&
           other.date == this.date &&
           other.image == this.image &&
           other.imageCover == this.imageCover &&
           other.ePoint == this.ePoint &&
           other.mPoint == this.mPoint &&
           other.hPoint == this.hPoint &&
-          other.rankPoint == this.rankPoint);
+          other.goldPoint == this.goldPoint &&
+          other.silverPoint == this.silverPoint &&
+          other.bronzePoint == this.bronzePoint &&
+          other.rankPoint == this.rankPoint &&
+          other.rank == this.rank);
 }
 
 class UserCompanion extends UpdateCompanion<UserData> {
   final Value<int> id;
   final Value<String> name;
+  final Value<String> mobile;
   final Value<DateTime> date;
   final Value<String> image;
   final Value<String> imageCover;
   final Value<int> ePoint;
   final Value<int> mPoint;
   final Value<int> hPoint;
+  final Value<int> goldPoint;
+  final Value<int> silverPoint;
+  final Value<int> bronzePoint;
   final Value<int> rankPoint;
+  final Value<int> rank;
   const UserCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.mobile = const Value.absent(),
     this.date = const Value.absent(),
     this.image = const Value.absent(),
     this.imageCover = const Value.absent(),
     this.ePoint = const Value.absent(),
     this.mPoint = const Value.absent(),
     this.hPoint = const Value.absent(),
+    this.goldPoint = const Value.absent(),
+    this.silverPoint = const Value.absent(),
+    this.bronzePoint = const Value.absent(),
     this.rankPoint = const Value.absent(),
+    this.rank = const Value.absent(),
   });
   UserCompanion.insert({
-    this.id = const Value.absent(),
+    @required int id,
     @required String name,
+    @required String mobile,
     this.date = const Value.absent(),
     @required String image,
     this.imageCover = const Value.absent(),
     this.ePoint = const Value.absent(),
     this.mPoint = const Value.absent(),
     this.hPoint = const Value.absent(),
+    this.goldPoint = const Value.absent(),
+    this.silverPoint = const Value.absent(),
+    this.bronzePoint = const Value.absent(),
     this.rankPoint = const Value.absent(),
-  })  : name = Value(name),
+    this.rank = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        mobile = Value(mobile),
         image = Value(image);
   static Insertable<UserData> custom({
     Expression<int> id,
     Expression<String> name,
+    Expression<String> mobile,
     Expression<DateTime> date,
     Expression<String> image,
     Expression<String> imageCover,
     Expression<int> ePoint,
     Expression<int> mPoint,
     Expression<int> hPoint,
+    Expression<int> goldPoint,
+    Expression<int> silverPoint,
+    Expression<int> bronzePoint,
     Expression<int> rankPoint,
+    Expression<int> rank,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (mobile != null) 'mobile': mobile,
       if (date != null) 'date': date,
       if (image != null) 'image': image,
       if (imageCover != null) 'image_cover': imageCover,
       if (ePoint != null) 'e_point': ePoint,
       if (mPoint != null) 'm_point': mPoint,
       if (hPoint != null) 'h_point': hPoint,
+      if (goldPoint != null) 'gold_point': goldPoint,
+      if (silverPoint != null) 'silver_point': silverPoint,
+      if (bronzePoint != null) 'bronze_point': bronzePoint,
       if (rankPoint != null) 'rank_point': rankPoint,
+      if (rank != null) 'rank': rank,
     });
   }
 
   UserCompanion copyWith(
       {Value<int> id,
       Value<String> name,
+      Value<String> mobile,
       Value<DateTime> date,
       Value<String> image,
       Value<String> imageCover,
       Value<int> ePoint,
       Value<int> mPoint,
       Value<int> hPoint,
-      Value<int> rankPoint}) {
+      Value<int> goldPoint,
+      Value<int> silverPoint,
+      Value<int> bronzePoint,
+      Value<int> rankPoint,
+      Value<int> rank}) {
     return UserCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      mobile: mobile ?? this.mobile,
       date: date ?? this.date,
       image: image ?? this.image,
       imageCover: imageCover ?? this.imageCover,
       ePoint: ePoint ?? this.ePoint,
       mPoint: mPoint ?? this.mPoint,
       hPoint: hPoint ?? this.hPoint,
+      goldPoint: goldPoint ?? this.goldPoint,
+      silverPoint: silverPoint ?? this.silverPoint,
+      bronzePoint: bronzePoint ?? this.bronzePoint,
       rankPoint: rankPoint ?? this.rankPoint,
+      rank: rank ?? this.rank,
     );
   }
 
@@ -295,6 +418,9 @@ class UserCompanion extends UpdateCompanion<UserData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (mobile.present) {
+      map['mobile'] = Variable<String>(mobile.value);
     }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
@@ -314,8 +440,20 @@ class UserCompanion extends UpdateCompanion<UserData> {
     if (hPoint.present) {
       map['h_point'] = Variable<int>(hPoint.value);
     }
+    if (goldPoint.present) {
+      map['gold_point'] = Variable<int>(goldPoint.value);
+    }
+    if (silverPoint.present) {
+      map['silver_point'] = Variable<int>(silverPoint.value);
+    }
+    if (bronzePoint.present) {
+      map['bronze_point'] = Variable<int>(bronzePoint.value);
+    }
     if (rankPoint.present) {
       map['rank_point'] = Variable<int>(rankPoint.value);
+    }
+    if (rank.present) {
+      map['rank'] = Variable<int>(rank.value);
     }
     return map;
   }
@@ -325,13 +463,18 @@ class UserCompanion extends UpdateCompanion<UserData> {
     return (StringBuffer('UserCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('mobile: $mobile, ')
           ..write('date: $date, ')
           ..write('image: $image, ')
           ..write('imageCover: $imageCover, ')
           ..write('ePoint: $ePoint, ')
           ..write('mPoint: $mPoint, ')
           ..write('hPoint: $hPoint, ')
-          ..write('rankPoint: $rankPoint')
+          ..write('goldPoint: $goldPoint, ')
+          ..write('silverPoint: $silverPoint, ')
+          ..write('bronzePoint: $bronzePoint, ')
+          ..write('rankPoint: $rankPoint, ')
+          ..write('rank: $rank')
           ..write(')'))
         .toString();
   }
@@ -346,8 +489,11 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+    return GeneratedIntColumn(
+      'id',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _nameMeta = const VerificationMeta('name');
@@ -357,6 +503,18 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
   GeneratedTextColumn _constructName() {
     return GeneratedTextColumn(
       'name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _mobileMeta = const VerificationMeta('mobile');
+  GeneratedTextColumn _mobile;
+  @override
+  GeneratedTextColumn get mobile => _mobile ??= _constructMobile();
+  GeneratedTextColumn _constructMobile() {
+    return GeneratedTextColumn(
+      'mobile',
       $tableName,
       false,
     );
@@ -434,6 +592,46 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
     );
   }
 
+  final VerificationMeta _goldPointMeta = const VerificationMeta('goldPoint');
+  GeneratedIntColumn _goldPoint;
+  @override
+  GeneratedIntColumn get goldPoint => _goldPoint ??= _constructGoldPoint();
+  GeneratedIntColumn _constructGoldPoint() {
+    return GeneratedIntColumn(
+      'gold_point',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _silverPointMeta =
+      const VerificationMeta('silverPoint');
+  GeneratedIntColumn _silverPoint;
+  @override
+  GeneratedIntColumn get silverPoint =>
+      _silverPoint ??= _constructSilverPoint();
+  GeneratedIntColumn _constructSilverPoint() {
+    return GeneratedIntColumn(
+      'silver_point',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _bronzePointMeta =
+      const VerificationMeta('bronzePoint');
+  GeneratedIntColumn _bronzePoint;
+  @override
+  GeneratedIntColumn get bronzePoint =>
+      _bronzePoint ??= _constructBronzePoint();
+  GeneratedIntColumn _constructBronzePoint() {
+    return GeneratedIntColumn(
+      'bronze_point',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _rankPointMeta = const VerificationMeta('rankPoint');
   GeneratedIntColumn _rankPoint;
   @override
@@ -446,9 +644,35 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
     );
   }
 
+  final VerificationMeta _rankMeta = const VerificationMeta('rank');
+  GeneratedIntColumn _rank;
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, date, image, imageCover, ePoint, mPoint, hPoint, rankPoint];
+  GeneratedIntColumn get rank => _rank ??= _constructRank();
+  GeneratedIntColumn _constructRank() {
+    return GeneratedIntColumn(
+      'rank',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        mobile,
+        date,
+        image,
+        imageCover,
+        ePoint,
+        mPoint,
+        hPoint,
+        goldPoint,
+        silverPoint,
+        bronzePoint,
+        rankPoint,
+        rank
+      ];
   @override
   $UserTable get asDslTable => this;
   @override
@@ -462,12 +686,20 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('mobile')) {
+      context.handle(_mobileMeta,
+          mobile.isAcceptableOrUnknown(data['mobile'], _mobileMeta));
+    } else if (isInserting) {
+      context.missing(_mobileMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -497,15 +729,35 @@ class $UserTable extends User with TableInfo<$UserTable, UserData> {
       context.handle(_hPointMeta,
           hPoint.isAcceptableOrUnknown(data['h_point'], _hPointMeta));
     }
+    if (data.containsKey('gold_point')) {
+      context.handle(_goldPointMeta,
+          goldPoint.isAcceptableOrUnknown(data['gold_point'], _goldPointMeta));
+    }
+    if (data.containsKey('silver_point')) {
+      context.handle(
+          _silverPointMeta,
+          silverPoint.isAcceptableOrUnknown(
+              data['silver_point'], _silverPointMeta));
+    }
+    if (data.containsKey('bronze_point')) {
+      context.handle(
+          _bronzePointMeta,
+          bronzePoint.isAcceptableOrUnknown(
+              data['bronze_point'], _bronzePointMeta));
+    }
     if (data.containsKey('rank_point')) {
       context.handle(_rankPointMeta,
           rankPoint.isAcceptableOrUnknown(data['rank_point'], _rankPointMeta));
+    }
+    if (data.containsKey('rank')) {
+      context.handle(
+          _rankMeta, rank.isAcceptableOrUnknown(data['rank'], _rankMeta));
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   UserData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -1665,7 +1917,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
   final int mPoint;
   final int hPoint;
   final String icon;
-  final bool isActive;
+  final String status;
   TitleData(
       {@required this.id,
       @required this.title,
@@ -1673,13 +1925,12 @@ class TitleData extends DataClass implements Insertable<TitleData> {
       @required this.mPoint,
       @required this.hPoint,
       @required this.icon,
-      @required this.isActive});
+      @required this.status});
   factory TitleData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return TitleData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       title:
@@ -1691,8 +1942,8 @@ class TitleData extends DataClass implements Insertable<TitleData> {
       hPoint:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}h_point']),
       icon: stringType.mapFromDatabaseResponse(data['${effectivePrefix}icon']),
-      isActive:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_active']),
+      status:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}status']),
     );
   }
   @override
@@ -1716,8 +1967,8 @@ class TitleData extends DataClass implements Insertable<TitleData> {
     if (!nullToAbsent || icon != null) {
       map['icon'] = Variable<String>(icon);
     }
-    if (!nullToAbsent || isActive != null) {
-      map['is_active'] = Variable<bool>(isActive);
+    if (!nullToAbsent || status != null) {
+      map['status'] = Variable<String>(status);
     }
     return map;
   }
@@ -1734,9 +1985,8 @@ class TitleData extends DataClass implements Insertable<TitleData> {
       hPoint:
           hPoint == null && nullToAbsent ? const Value.absent() : Value(hPoint),
       icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
-      isActive: isActive == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isActive),
+      status:
+          status == null && nullToAbsent ? const Value.absent() : Value(status),
     );
   }
 
@@ -1750,7 +2000,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
       mPoint: serializer.fromJson<int>(json['mPoint']),
       hPoint: serializer.fromJson<int>(json['hPoint']),
       icon: serializer.fromJson<String>(json['icon']),
-      isActive: serializer.fromJson<bool>(json['isActive']),
+      status: serializer.fromJson<String>(json['status']),
     );
   }
   @override
@@ -1763,7 +2013,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
       'mPoint': serializer.toJson<int>(mPoint),
       'hPoint': serializer.toJson<int>(hPoint),
       'icon': serializer.toJson<String>(icon),
-      'isActive': serializer.toJson<bool>(isActive),
+      'status': serializer.toJson<String>(status),
     };
   }
 
@@ -1774,7 +2024,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
           int mPoint,
           int hPoint,
           String icon,
-          bool isActive}) =>
+          String status}) =>
       TitleData(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -1782,7 +2032,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
         mPoint: mPoint ?? this.mPoint,
         hPoint: hPoint ?? this.hPoint,
         icon: icon ?? this.icon,
-        isActive: isActive ?? this.isActive,
+        status: status ?? this.status,
       );
   @override
   String toString() {
@@ -1793,7 +2043,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
           ..write('mPoint: $mPoint, ')
           ..write('hPoint: $hPoint, ')
           ..write('icon: $icon, ')
-          ..write('isActive: $isActive')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
@@ -1808,7 +2058,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
               $mrjc(
                   mPoint.hashCode,
                   $mrjc(hPoint.hashCode,
-                      $mrjc(icon.hashCode, isActive.hashCode)))))));
+                      $mrjc(icon.hashCode, status.hashCode)))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1819,7 +2069,7 @@ class TitleData extends DataClass implements Insertable<TitleData> {
           other.mPoint == this.mPoint &&
           other.hPoint == this.hPoint &&
           other.icon == this.icon &&
-          other.isActive == this.isActive);
+          other.status == this.status);
 }
 
 class TitleCompanion extends UpdateCompanion<TitleData> {
@@ -1829,7 +2079,7 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
   final Value<int> mPoint;
   final Value<int> hPoint;
   final Value<String> icon;
-  final Value<bool> isActive;
+  final Value<String> status;
   const TitleCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -1837,22 +2087,23 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
     this.mPoint = const Value.absent(),
     this.hPoint = const Value.absent(),
     this.icon = const Value.absent(),
-    this.isActive = const Value.absent(),
+    this.status = const Value.absent(),
   });
   TitleCompanion.insert({
-    this.id = const Value.absent(),
+    @required int id,
     @required String title,
     @required int ePoint,
     @required int mPoint,
     @required int hPoint,
     @required String icon,
-    @required bool isActive,
-  })  : title = Value(title),
+    @required String status,
+  })  : id = Value(id),
+        title = Value(title),
         ePoint = Value(ePoint),
         mPoint = Value(mPoint),
         hPoint = Value(hPoint),
         icon = Value(icon),
-        isActive = Value(isActive);
+        status = Value(status);
   static Insertable<TitleData> custom({
     Expression<int> id,
     Expression<String> title,
@@ -1860,7 +2111,7 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
     Expression<int> mPoint,
     Expression<int> hPoint,
     Expression<String> icon,
-    Expression<bool> isActive,
+    Expression<String> status,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1869,7 +2120,7 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
       if (mPoint != null) 'm_point': mPoint,
       if (hPoint != null) 'h_point': hPoint,
       if (icon != null) 'icon': icon,
-      if (isActive != null) 'is_active': isActive,
+      if (status != null) 'status': status,
     });
   }
 
@@ -1880,7 +2131,7 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
       Value<int> mPoint,
       Value<int> hPoint,
       Value<String> icon,
-      Value<bool> isActive}) {
+      Value<String> status}) {
     return TitleCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -1888,7 +2139,7 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
       mPoint: mPoint ?? this.mPoint,
       hPoint: hPoint ?? this.hPoint,
       icon: icon ?? this.icon,
-      isActive: isActive ?? this.isActive,
+      status: status ?? this.status,
     );
   }
 
@@ -1913,8 +2164,8 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
     if (icon.present) {
       map['icon'] = Variable<String>(icon.value);
     }
-    if (isActive.present) {
-      map['is_active'] = Variable<bool>(isActive.value);
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
     }
     return map;
   }
@@ -1928,7 +2179,7 @@ class TitleCompanion extends UpdateCompanion<TitleData> {
           ..write('mPoint: $mPoint, ')
           ..write('hPoint: $hPoint, ')
           ..write('icon: $icon, ')
-          ..write('isActive: $isActive')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
@@ -1943,8 +2194,11 @@ class $TitleTable extends Title with TableInfo<$TitleTable, TitleData> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+    return GeneratedIntColumn(
+      'id',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _titleMeta = const VerificationMeta('title');
@@ -2007,13 +2261,13 @@ class $TitleTable extends Title with TableInfo<$TitleTable, TitleData> {
     );
   }
 
-  final VerificationMeta _isActiveMeta = const VerificationMeta('isActive');
-  GeneratedBoolColumn _isActive;
+  final VerificationMeta _statusMeta = const VerificationMeta('status');
+  GeneratedTextColumn _status;
   @override
-  GeneratedBoolColumn get isActive => _isActive ??= _constructIsActive();
-  GeneratedBoolColumn _constructIsActive() {
-    return GeneratedBoolColumn(
-      'is_active',
+  GeneratedTextColumn get status => _status ??= _constructStatus();
+  GeneratedTextColumn _constructStatus() {
+    return GeneratedTextColumn(
+      'status',
       $tableName,
       false,
     );
@@ -2021,7 +2275,7 @@ class $TitleTable extends Title with TableInfo<$TitleTable, TitleData> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, ePoint, mPoint, hPoint, icon, isActive];
+      [id, title, ePoint, mPoint, hPoint, icon, status];
   @override
   $TitleTable get asDslTable => this;
   @override
@@ -2035,6 +2289,8 @@ class $TitleTable extends Title with TableInfo<$TitleTable, TitleData> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -2066,17 +2322,17 @@ class $TitleTable extends Title with TableInfo<$TitleTable, TitleData> {
     } else if (isInserting) {
       context.missing(_iconMeta);
     }
-    if (data.containsKey('is_active')) {
-      context.handle(_isActiveMeta,
-          isActive.isAcceptableOrUnknown(data['is_active'], _isActiveMeta));
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status'], _statusMeta));
     } else if (isInserting) {
-      context.missing(_isActiveMeta);
+      context.missing(_statusMeta);
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   TitleData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "530160533800",
+    "firebase_url": "https://quizz-2020.firebaseio.com",
+    "project_id": "quizz-2020",
+    "storage_bucket": "quizz-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:530160533800:android:9f38e3544d9b8a45d5d01d",
+        "android_client_info": {
+          "package_name": "com.mpv.quiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "530160533800-3td2veg53nudvt24v7fg7g36eqsj4e7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZHrwNuCeB0sE476HT-i8VjZK9E4YWiB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "530160533800-3td2veg53nudvt24v7fg7g36eqsj4e7j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
