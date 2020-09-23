@@ -9,6 +9,7 @@ import 'package:quiz/src/data/models/user_rank.dart';
 import 'package:quiz/src/screen/user/user_event.dart';
 import 'package:quiz/src/screen/user/user_state.dart';
 import 'package:quiz/src/utils/Constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   var db = AppDatabase.getInstance().modesDao;
@@ -121,6 +122,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         var newUser = await db.getUser;
         yield UserLoadedInformationState(user: newUser[0]);
       }
+    } else if (event is UserSignOutEvent) {
+      await signOut();
+      yield UserSignOutState();
     }
   }
 
@@ -140,6 +144,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       i = i++;
     });
     return list;
+  }
+
+  Future<void> signOut() async {
+    await db.deleteUser();
+    await db.deleteItems();
+    await db.deleteTitles();
+    var shared = await SharedPreferences.getInstance();
+    shared.setBool(IS_REGISTER, false);
+    shared.setBool(IS_INIT_DATA, false);
   }
 
   TitleData getTitle(int goldPoint, int silverPoint, int bronzePoint) {

@@ -146,6 +146,12 @@ class ModesDao extends DatabaseAccessor<AppDatabase> with _$ModesDaoMixin {
 
   Future<List<ItemData>> get getItems => select(item).get();
 
+  Future deleteUser() => customStatement("delete from user where 1");
+
+  Future deleteItems() => customStatement("delete from item where 1");
+
+  Future deleteTitles() => customStatement("delete from title where 1");
+
   Future<List<QuizData>> getQuizzesByCat(int id) {
     return (select(quiz)..where((tbl) => tbl.idCat.equals(id))).get();
   }

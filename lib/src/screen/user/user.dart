@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -223,6 +224,11 @@ class TitleInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
+        if (state is UserSignOutState) {
+          Timer(Duration(milliseconds: 10), () {
+            Navigator.pushReplacementNamed(context, "/intro");
+          });
+        }
         return Container(
           padding: EdgeInsets.all(10),
           child: Column(
@@ -248,7 +254,24 @@ class TitleInfo extends StatelessWidget {
                     child: Column(
                       children: _buildTitles(context),
                     )),
-              )
+              ),
+              RaisedButton(
+                onPressed: () {
+                  context.bloc<UserBloc>().add(UserSignOutEvent());
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4)),
+                color: Colors.red,
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  "Sign out",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         );

@@ -93,3 +93,5 @@ class UserUpdateCoverImageEvent extends UserEvent {
 
   UserUpdateCoverImageEvent({@required this.file});
 }
+
+class UserSignOutEvent extends UserEvent{}
