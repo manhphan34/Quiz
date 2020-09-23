@@ -58,3 +58,5 @@ class UserUpdateCoverImageState extends UserState {
 
   UserUpdateCoverImageState({this.user});
 }
+
+class UserSignOutState extends UserState {}
