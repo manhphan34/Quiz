@@ -13,7 +13,7 @@ abstract class ApiClient {
   }
 
   @GET(
-      "api.php?amount={amount}&category={category}&difficulty={difficulty}&type=multiple")
+      "api.php?amount={amount}&category={category}&difficulty={difficulty}&type=multiple&encode=base64")
   Future<QuizResponse> getQuiz(
     @Path("amount") int amount,
     @Path("category") int category,
