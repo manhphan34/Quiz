@@ -39,21 +39,21 @@ class Quiz {
     this.incorrectAnswers,
   });
 
-  Category category;
-  Type type;
-  Difficulty difficulty;
+  String category;
+  String type;
+  String difficulty;
   String question;
   String correctAnswer;
   List<String> incorrectAnswers;
 
   factory Quiz.fromJson(Map<String, dynamic> json) => Quiz(
-        category: categoryValues.map[json["category"]],
-        type: typeValues.map[json["type"]],
-        difficulty: difficultyValues.map[json["difficulty"]],
-        question: json["question"],
-        correctAnswer: json["correct_answer"],
-        incorrectAnswers:
-            List<String>.from(json["incorrect_answers"].map((x) => x)),
+        category: utf8.decode(base64.decode(json["category"])),
+        type: utf8.decode(base64.decode(json["type"])),
+        difficulty: utf8.decode(base64.decode(json["difficulty"])),
+        question: utf8.decode(base64.decode(json["question"])),
+        correctAnswer: utf8.decode(base64.decode(json["correct_answer"])),
+        incorrectAnswers: List<String>.from(json["incorrect_answers"]
+            .map((x) => utf8.decode(base64.decode(x)))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -77,7 +77,7 @@ class Quiz {
 
   List<Answer> getAnswer_50_50(List<Answer> answers) {
     for (int i = 0; i < 2; i++) {
-      int j =0;
+      int j = 0;
       for (j = 0; j < 4; j++) {
         if (incorrectAnswers[i] == answers[j].value) {
           answers[j].isShowResult = true;

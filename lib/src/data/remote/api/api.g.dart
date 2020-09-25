@@ -25,7 +25,7 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final Response<Map<String, dynamic>> _result = await _dio.request(
-        'api.php?amount=$amount&category=$category&difficulty=$difficulty&type=multiple',
+        'api.php?amount=$amount&category=$category&difficulty=$difficulty&type=multiple&encode=base64',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
