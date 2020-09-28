@@ -17,41 +17,43 @@ class Category extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     rateApp(context);
-    return Scaffold(
-      body: Stack(children: [
-        Container(
-          height: double.infinity,
-          child: Image.asset(
-            "assets/images/background.webp",
-            fit: BoxFit.fitHeight,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 56),
-          width: double.infinity,
-          height: double.infinity,
-          child: Card(
-            margin: EdgeInsets.all(0),
-            elevation: 0,
-            color: Colors.black87,
-            child: Categories(),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.all(0),
-          width: double.infinity,
-          height: 56,
-          child: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.black87,
-            title: Container(
-              padding: EdgeInsets.only(top: 8),
-              child: Text("Pick at a topic to challenger"),
+    return MaterialApp(
+      home: Scaffold(
+        body: Stack(children: [
+          Container(
+            height: double.infinity,
+            child: Image.asset(
+              "assets/images/background.webp",
+              fit: BoxFit.fitHeight,
             ),
-            centerTitle: true,
           ),
-        ),
-      ]),
+          Container(
+            margin: EdgeInsets.only(top: 56),
+            width: double.infinity,
+            height: double.infinity,
+            child: Card(
+              margin: EdgeInsets.all(0),
+              elevation: 0,
+              color: Colors.black87,
+              child: Categories(),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(0),
+            width: double.infinity,
+            height: 56,
+            child: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.black87,
+              title: Container(
+                padding: EdgeInsets.only(top: 8),
+                child: Text("Pick at a topic to challenger"),
+              ),
+              centerTitle: true,
+            ),
+          ),
+        ]),
+      ),
     );
   }
 
