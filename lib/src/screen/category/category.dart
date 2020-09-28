@@ -11,10 +11,12 @@ import 'package:quiz/src/screen/category/category_state.dart';
 import 'package:quiz/src/screen/quiz/quiz.dart';
 import 'package:quiz/src/utils/toast.dart';
 import 'package:quiz/src/widget/loader.dart';
+import "package:rate_my_app/rate_my_app.dart";
 
 class Category extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    rateApp(context);
     return Scaffold(
       body: Stack(children: [
         Container(
@@ -51,6 +53,51 @@ class Category extends StatelessWidget {
         ),
       ]),
     );
+  }
+
+  void rateApp(BuildContext context) {
+    RateMyApp _rateMyApp = RateMyApp(
+        preferencesPrefix: 'rateQuizApp',
+        minDays: 1,
+        minLaunches: 3,
+        remindDays: 1,
+        remindLaunches: 3);
+
+    _rateMyApp.init().then((_) {
+      if (_rateMyApp.shouldOpenDialog) {
+        //conditions check if user already rated the app
+        _rateMyApp.showStarRateDialog(
+          context,
+          title: 'What do you think about Our App?',
+          message: 'Please leave a rating',
+          actionsBuilder: (_, stars) {
+            return [
+              // Returns a list of actions (that will be shown at the bottom of the dialog).
+              FlatButton(
+                child: Text('Rate now'),
+                onPressed: () async {
+                  print('Thanks for the ' +
+                      (stars == null ? '0' : stars.round().toString()) +
+                      ' star(s) !');
+                  await _rateMyApp
+                      .callEvent(RateMyAppEventType.rateButtonPressed);
+                  Navigator.pop<RateMyAppDialogButton>(
+                      context, RateMyAppDialogButton.rate);
+                },
+              ),
+            ];
+          },
+          dialogStyle: DialogStyle(
+            titleAlign: TextAlign.center,
+            messageAlign: TextAlign.center,
+            messagePadding: EdgeInsets.only(bottom: 20.0),
+          ),
+          starRatingOptions: StarRatingOptions(),
+          onDismissed: () =>
+              _rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+        );
+      }
+    });
   }
 }
 
@@ -243,10 +290,8 @@ class _CategoriesState extends State<Categories> {
                         ),
                       ),
                       Container(
-                        child: _textSelectedItem(
-                            numbers.keys.toList(),
-                            QUIZ_DIFFICULTY,
-                            _selectedDiffculty),
+                        child: _textSelectedItem(numbers.keys.toList(),
+                            QUIZ_DIFFICULTY, _selectedDiffculty),
                       ),
                       Container(
                         margin: EdgeInsets.only(bottom: 4, top: 8),
@@ -260,8 +305,8 @@ class _CategoriesState extends State<Categories> {
                       ),
                       Container(
                         margin: EdgeInsets.only(bottom: 8),
-                        child: _textSelectedItem(numbersOfDiff,
-                            QUIZ_QUANTITY, _selectedCount),
+                        child: _textSelectedItem(
+                            numbersOfDiff, QUIZ_QUANTITY, _selectedCount),
                       ),
                       MaterialButton(
                         shape: RoundedRectangleBorder(
