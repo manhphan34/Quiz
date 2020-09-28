@@ -38,66 +38,68 @@ class _RankState extends State<Rank> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text("LeaderBoard"),
-        backgroundColor: Color(0xffa5d6a7),
-        centerTitle: true,
-      ),
-      body: BlocProvider(
-          create: (context) => _userBloc,
-          child: BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
-              if (state is UserInitialState) {
-                return Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.white,
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    child: LoaderTwo(),
-                  ),
-                );
-              } else if (state is GetAllUserState) {
-                users = state.ranks;
-              }
-              return Stack(
-                children: [
-                  Container(
-                    child: ListView.builder(
-                      itemCount: users.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index < users.length) {
-                          return _buildUser(
-                              users[index], index + 1, Colors.white, false);
-                        } else {
-                          return SizedBox(
-                            height: 80,
-                          );
-                        }
-                      },
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: Text("LeaderBoard"),
+          backgroundColor: Color(0xffa5d6a7),
+          centerTitle: true,
+        ),
+        body: BlocProvider(
+            create: (context) => _userBloc,
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is UserInitialState) {
+                  return Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.white,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      child: LoaderTwo(),
                     ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    child: Card(
-                      margin: EdgeInsets.all(0),
-                      elevation: 16,
-                      child: Container(
-                        height: 81,
-                        color: Colors.green.shade200,
-                        child: _buildUser(
-                            getSelf(), index + 1, Colors.green.shade200, true),
+                  );
+                } else if (state is GetAllUserState) {
+                  users = state.ranks;
+                }
+                return Stack(
+                  children: [
+                    Container(
+                      child: ListView.builder(
+                        itemCount: users.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index < users.length) {
+                            return _buildUser(
+                                users[index], index + 1, Colors.white, false);
+                          } else {
+                            return SizedBox(
+                              height: 80,
+                            );
+                          }
+                        },
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-          )),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: Card(
+                        margin: EdgeInsets.all(0),
+                        elevation: 16,
+                        child: Container(
+                          height: 81,
+                          color: Colors.green.shade200,
+                          child: _buildUser(getSelf(), index + 1,
+                              Colors.green.shade200, true),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            )),
+      ),
     );
   }
 

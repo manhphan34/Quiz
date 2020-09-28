@@ -43,7 +43,7 @@ class _BottomNavSate extends State<BottomNav> {
     return Scaffold(
       body: SizedBox.expand(
         child: PageView(
-
+          physics: NeverScrollableScrollPhysics(),
           controller: _controller,
           onPageChanged: (index) {
             setState(() {
