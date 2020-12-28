@@ -5,10 +5,10 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('String.split() splits the string on the delimiter', () {
-    var string = 'foo,bar,baz';
-    expect(string.split(','), equals(['foo', 'bar', 'baz']));
+    var string = 'foo,bar';
+    expect(string.split(','), equals(['foo', 'bar']));
   });
 }
